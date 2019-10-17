@@ -7,6 +7,5 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="interfaz.Controller">
    <children>
       <Button fx:id="btnCargar" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#cargar" text="Cargar" />
-      <Label fx:id="lblArchivo" layoutX="96.0" layoutY="18.0" text="Label" />
    </children>
 </AnchorPane>
