@@ -218,25 +218,38 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
         if (key == null || value == null) throw new NullPointerException("put(): parámetro null");
 
         int ib = this.hashIt(key);
-        Map.Entry<K, V> bucket = (Map.Entry<K, V>) this.internalTable[ib];
+        Map.Entry<K, V> entry = (Map.Entry<K, V>) this.internalTable[ib];
+        int fountId = -1;
+        int index = ib + 1;
+        V old = null;
 
-        while (bucket != null || bucket.getValue() == value) {
-            ib++;
-            if (ib == internalTable.length) {
-                ib = 0;
+        while (index != ib) {
+            if (index == internalTable.length) {
+                index = 0;
             }
-            bucket = (Map.Entry<K, V>) this.internalTable[ib];
 
+            if ((entry == null) || (entry.getValue() instanceof Tomb)) {
+                fountId = index;
+            }
+
+            if (entry != null && value.equals(entry.getValue())) {
+                fountId = index;
+                old = entry.getValue();
+                break;
+            }
+
+            if (entry == null) {
+                break;
+            }
+            index++;
+            entry = (Map.Entry<K, V>) this.internalTable[index];
         }
-        V old;
-        if(bucket != null) {
-            old = bucket.getValue();
-        } else {
-            old = null;
+
+        if (this.averageLength() >= this.loadFactor * 10) {
+            this.rehash();
         }
-        if (this.averageLength() >= this.loadFactor * 10) this.rehash();
-        Map.Entry<K, V> entry = new Entry<>(key, value);
-        this.internalTable[ib] = entry;
+        Map.Entry<K, V> newEntry = new Entry<>(key, value);
+        this.internalTable[fountId] = newEntry;
         this.count++;
         this.modCount++;
 
@@ -260,6 +273,7 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
         TSBArrayList<Map.Entry<K, V>> bucket = this.internalTable[ib];
 
         int ik = this.searchForIndex((K) key, bucket);
+
         V old = null;
         if (ik != -1) {
             old = bucket.remove(ik).getValue();
@@ -613,8 +627,22 @@ public class TSB_OAHashtable<K, V> implements Map<K, V>, Cloneable, Serializable
 
     //************************ Clases Internas.
 
-    private class Tomb {
+    private class Tomb<K, V> implements Map.Entry<K, V> {
 
+        @Override
+        public K getKey() {
+            return null;
+        }
+
+        @Override
+        public V getValue() {
+            return null;
+        }
+
+        @Override
+        public V setValue(V value) {
+            return null;
+        }
     }
 
     /*
