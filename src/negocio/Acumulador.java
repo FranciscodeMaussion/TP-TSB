@@ -10,4 +10,11 @@ public class Acumulador {
     public void sumar(int valor){
         cantidad += valor;
     }
+
+    @Override
+    public String toString() {
+        return "Acumulador{" +
+                "cantidad=" + cantidad +
+                '}';
+    }
 }

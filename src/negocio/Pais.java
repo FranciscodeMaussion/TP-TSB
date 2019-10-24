@@ -1,20 +1,38 @@
 package negocio;
 
-import soporte.TSBHashTable;
 import soporte.TextFile;
+
+import java.util.Hashtable;
+
+import static constants.Constants.*;
 
 
 public class Pais {
-    private TSBHashTable resultados;
+    private Hashtable resultados;
+    private Hashtable postulaciones;
+    private Hashtable regiones;
     private TextFile mesasTotalesAgrupacion;
+    private TextFile descripcionPostulaciones;
+    private TextFile descripcionRegiones;
 
     public Pais(String path) {
-        this.mesasTotalesAgrupacion = new TextFile(path+"/mesas_totales_agrp_politica.dsv");
+        this.mesasTotalesAgrupacion = new TextFile(path+ FILE_MESAS);
+        this.descripcionPostulaciones = new TextFile(path+FILE_POSTULACIONES);
+        this.descripcionRegiones = new TextFile(path+FILE_REGIONES);
     }
 
     public void cargarResultados() {
         resultados = mesasTotalesAgrupacion.sumarPorAgrupacion();
     }
+
+    public void cargarDescripcionPostulaciones(){
+        postulaciones = descripcionPostulaciones.getPostulaciones();
+    }
+
+    public void cargarDescripcionRegiones(){
+        regiones = descripcionPostulaciones.getPostulaciones();
+    }
+
 
     @Override
     public String toString() {
