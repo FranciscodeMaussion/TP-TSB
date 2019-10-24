@@ -1,6 +1,8 @@
 package negocio;
 
-import soporte.TextFile;
+import services.MesasTextFileService;
+import services.PostulacionesTextFileService;
+import services.RegionesTextFileService;
 
 import java.util.Hashtable;
 
@@ -11,25 +13,25 @@ public class Pais {
     private Hashtable resultados;
     private Hashtable postulaciones;
     private Hashtable regiones;
-    private TextFile mesasTotalesAgrupacion;
-    private TextFile descripcionPostulaciones;
-    private TextFile descripcionRegiones;
+    private MesasTextFileService mesasTotalesAgrupacion;
+    private PostulacionesTextFileService descripcionPostulaciones;
+    private RegionesTextFileService descripcionRegiones;
 
     public Pais(String path) {
-        this.mesasTotalesAgrupacion = new TextFile(path+ FILE_MESAS);
-        this.descripcionPostulaciones = new TextFile(path+FILE_POSTULACIONES);
-        this.descripcionRegiones = new TextFile(path+FILE_REGIONES);
+        this.mesasTotalesAgrupacion = new MesasTextFileService(path + FILE_MESAS);
+        this.descripcionPostulaciones = new PostulacionesTextFileService(path + FILE_POSTULACIONES);
+        this.descripcionRegiones = new RegionesTextFileService(path + FILE_REGIONES);
     }
 
     public void cargarResultados() {
         resultados = mesasTotalesAgrupacion.sumarPorAgrupacion();
     }
 
-    public void cargarDescripcionPostulaciones(){
+    public void cargarDescripcionPostulaciones() {
         postulaciones = descripcionPostulaciones.getPostulaciones();
     }
 
-    public void cargarDescripcionRegiones(){
+    public void cargarDescripcionRegiones() {
         regiones = descripcionPostulaciones.getPostulaciones();
     }
 

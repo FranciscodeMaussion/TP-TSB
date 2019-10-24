@@ -17,5 +17,7 @@ public class Constants {
 
     public static final int CODIGO_REGION = 0;
     public static final int NOMBRE_REGION = 1;
+    public static final String SEPARATOR = "\\|";
+
 
 }

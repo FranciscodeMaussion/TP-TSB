@@ -1,4 +1,4 @@
-package negocio;
+package soporte;
 
 public class Acumulador {
     private int cantidad;
@@ -7,7 +7,7 @@ public class Acumulador {
         this.cantidad = inicial;
     }
 
-    public void sumar(int valor){
+    public void sumar(int valor) {
         cantidad += valor;
     }
 

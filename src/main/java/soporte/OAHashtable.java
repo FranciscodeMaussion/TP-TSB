@@ -323,7 +323,7 @@ public class OAHashtable<K, V> implements Map<K, V> {
         }
 
         private class KeySetIterator implements Iterator<K> {
-            
+
             @Override
             public boolean hasNext() {
                 return false;
