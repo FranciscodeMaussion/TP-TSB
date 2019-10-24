@@ -18,13 +18,9 @@ public class Pais {
     private RegionesTextFileService descripcionRegiones;
 
     public Pais(String path) {
-        this.mesasTotalesAgrupacion = new MesasTextFileService(path + FILE_MESAS);
         this.descripcionPostulaciones = new PostulacionesTextFileService(path + FILE_POSTULACIONES);
         this.descripcionRegiones = new RegionesTextFileService(path + FILE_REGIONES);
-    }
-
-    public void cargarResultados() {
-        resultados = mesasTotalesAgrupacion.sumarPorAgrupacion();
+        this.mesasTotalesAgrupacion = new MesasTextFileService(path + FILE_MESAS);
     }
 
     public void cargarDescripcionPostulaciones() {
@@ -33,6 +29,10 @@ public class Pais {
 
     public void cargarDescripcionRegiones() {
         regiones = descripcionPostulaciones.getPostulaciones();
+    }
+
+    public void cargarResultados() {
+        resultados = mesasTotalesAgrupacion.sumarPorAgrupacion();
     }
 
 

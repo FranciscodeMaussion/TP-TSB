@@ -24,21 +24,25 @@ public class RegionSeccionStrategy implements RegionStrategy {
 
     @Override
     public void process(String[] campos, Hashtable table) {
-        String distritoCode;
-        Distrito distrito;
-        Seccion seccion;
-        Hashtable distritoTable;
+        String distritoCode = campos[CODIGO_REGION].substring(0, LENGTH_DISTRITO-1);
+        String seccionCode = campos[CODIGO_REGION].substring(LENGTH_DISTRITO);
 
-        distritoCode = campos[CODIGO_REGION].substring(0, 1);
-        distrito = (Distrito) table.get(distritoCode);
+        Seccion seccion = (Seccion) table.get(seccionCode);
+        if (seccion == null) {
+            seccion = new Seccion(seccionCode, campos[NOMBRE_REGION]);
+        } else {
+            seccion.setDescripcion(campos[NOMBRE_REGION]);
+        }
+
+        Distrito distrito = (Distrito) table.get(distritoCode);
         if (distrito == null) {
             distrito = new Distrito(distritoCode, DEFAULT_NAME);
-            table.put(campos[CODIGO_REGION], distrito);
+            table.put(distritoCode, distrito);
         }
-        seccion = new Seccion(campos[CODIGO_REGION].substring(2), campos[NOMBRE_REGION]);
-        distritoTable = distrito.getSecciones();
-        distritoTable.put(campos[CODIGO_REGION].substring(2), seccion);
-        distrito.setSecciones(distritoTable);
+
+        Hashtable distritoTable = distrito.getChilds();
+        distritoTable.put(seccionCode, seccion);
+        distrito.setChilds(distritoTable);
     }
 
 }

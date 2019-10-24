@@ -13,8 +13,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Scanner;
 
-import static constants.Constants.CODIGO_REGION;
-import static constants.Constants.SEPARATOR;
+import static constants.Constants.*;
 
 public class RegionesTextFileService {
 
@@ -25,9 +24,9 @@ public class RegionesTextFileService {
     public RegionesTextFileService(String path) {
         this.path = path;
         strategies = new HashMap<>();
-        strategies.put(2, RegionDistritoStrategy.getInstance());
-        strategies.put(5, RegionSeccionStrategy.getInstance());
-        strategies.put(11, RegionCircuitoStrategy.getInstance());
+        strategies.put(LENGTH_DISTRITO, RegionDistritoStrategy.getInstance());
+        strategies.put(LENGTH_SECCION, RegionSeccionStrategy.getInstance());
+        strategies.put(LENGTH_CIRCUITO, RegionCircuitoStrategy.getInstance());
     }
 
 

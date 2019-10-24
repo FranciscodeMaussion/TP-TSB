@@ -2,7 +2,7 @@ package negocio;
 
 import java.util.Hashtable;
 
-public class Distrito {
+public class Distrito{
     private String codigo;
     private String descripcion;
     private Hashtable secciones;
@@ -17,11 +17,11 @@ public class Distrito {
         this.descripcion = descripcion;
     }
 
-    public Hashtable getSecciones() {
+    public Hashtable getChilds() {
         return secciones;
     }
 
-    public void setSecciones(Hashtable secciones) {
+    public void setChilds(Hashtable secciones) {
         this.secciones = secciones;
     }
 }

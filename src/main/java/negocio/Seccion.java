@@ -2,7 +2,7 @@ package negocio;
 
 import java.util.Hashtable;
 
-public class Seccion {
+public class Seccion{
     private String codigo;
     private String descripcion;
     private Hashtable circuitos;
@@ -14,11 +14,16 @@ public class Seccion {
         this.circuitos = new Hashtable();
     }
 
-    public Hashtable getCircuitos() {
+    public Hashtable getChilds() {
         return circuitos;
     }
 
-    public void setCircuitos(Hashtable circuitos) {
+    public void setChilds(Hashtable circuitos) {
         this.circuitos = circuitos;
     }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
 }

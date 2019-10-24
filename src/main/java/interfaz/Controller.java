@@ -15,6 +15,8 @@ public class Controller {
         File file = directoryChooser.showDialog(null);
         if (file != null) {
             Pais pais = new Pais(file.getPath());
+            pais.cargarDescripcionPostulaciones();
+            pais.cargarDescripcionRegiones();
             pais.cargarResultados();
         }
     }

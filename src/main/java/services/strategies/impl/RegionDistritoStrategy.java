@@ -24,13 +24,12 @@ public class RegionDistritoStrategy implements RegionStrategy {
 
     @Override
     public void process(String[] campos, Hashtable table) {
-        Distrito distrito;
-        distrito = (Distrito) table.get(campos[CODIGO_REGION]);
+        Distrito distrito = (Distrito) table.get(campos[CODIGO_REGION]);
         if (distrito == null) {
             distrito = new Distrito(campos[CODIGO_REGION], campos[NOMBRE_REGION]);
-            table.put(campos[CODIGO_REGION], distrito);
         } else {
             distrito.setDescripcion(campos[NOMBRE_REGION]);
         }
+        table.put(campos[CODIGO_REGION], distrito);
     }
 }
