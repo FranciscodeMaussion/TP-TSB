@@ -3,10 +3,11 @@ package services;
 import negocio.Agrupacion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import soporte.OAHashtable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Scanner;
 
 import static constants.Constants.*;
@@ -21,8 +22,8 @@ public class PostulacionesTextFileService {
         this.path = path;
     }
 
-    public Hashtable getPostulaciones() {
-        Hashtable table = new Hashtable();
+    public Map getPostulaciones() {
+        Map table = new OAHashtable();
         Scanner fileReader;
         try {
             fileReader = new Scanner(new File(path));

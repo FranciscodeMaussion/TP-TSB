@@ -4,7 +4,7 @@ import negocio.Distrito;
 import negocio.Seccion;
 import services.strategies.RegionStrategy;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 import static constants.Constants.*;
 
@@ -23,7 +23,7 @@ public class RegionSeccionStrategy implements RegionStrategy {
     }
 
     @Override
-    public void process(String[] campos, Hashtable table) {
+    public void process(String[] campos, Map table) {
         String distritoCode = campos[CODIGO_REGION].substring(0, LENGTH_DISTRITO-1);
         String seccionCode = campos[CODIGO_REGION].substring(LENGTH_DISTRITO);
 
@@ -40,7 +40,7 @@ public class RegionSeccionStrategy implements RegionStrategy {
             table.put(distritoCode, distrito);
         }
 
-        Hashtable distritoTable = distrito.getChilds();
+        Map distritoTable = distrito.getChilds();
         distritoTable.put(seccionCode, seccion);
         distrito.setChilds(distritoTable);
     }

@@ -33,8 +33,9 @@
         <appender-ref ref="FILE"/>
     </appender>
 
-    <root level="INFO">
+    <root level="info">
         <appender-ref ref="ASYNC-CONSOLE"/>
         <appender-ref ref="ASYNC-FILE"/>
     </root>
+
 </configuration>

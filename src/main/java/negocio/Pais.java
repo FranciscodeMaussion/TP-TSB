@@ -4,15 +4,15 @@ import services.MesasTextFileService;
 import services.PostulacionesTextFileService;
 import services.RegionesTextFileService;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 import static constants.Constants.*;
 
 
 public class Pais {
-    private Hashtable resultados;
-    private Hashtable postulaciones;
-    private Hashtable regiones;
+    private Map resultados;
+    private Map postulaciones;
+    private Map regiones;
     private MesasTextFileService mesasTotalesAgrupacion;
     private PostulacionesTextFileService descripcionPostulaciones;
     private RegionesTextFileService descripcionRegiones;

@@ -1,9 +1,9 @@
 package services.strategies;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 public interface RegionStrategy {
 
-    void process(String[] campos, Hashtable table);
+    void process(String[] campos, Map table);
 
 }

@@ -1,13 +1,14 @@
 package services;
 
 import constants.Constants;
-import soporte.Acumulador;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import soporte.Acumulador;
+import soporte.OAHashtable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Scanner;
 
 import static constants.Constants.*;
@@ -21,8 +22,8 @@ public class MesasTextFileService {
         this.path = path;
     }
 
-    public Hashtable sumarPorAgrupacion() {
-        Hashtable table = new Hashtable();
+    public Map sumarPorAgrupacion() {
+        Map table = new OAHashtable();
         Scanner fileReader;
         try {
             fileReader = new Scanner(new File(path));
@@ -45,7 +46,7 @@ public class MesasTextFileService {
         return table;
     }
 
-    private void sumarVotos(int votos, Hashtable table, String id) {
+    private void sumarVotos(int votos, Map table, String id) {
         Acumulador totalizador = (Acumulador) table.get(id);
         if (totalizador == null) {
             totalizador = new Acumulador(0);
