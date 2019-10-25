@@ -7,13 +7,14 @@ public class OAHashtable<K, V> implements Map<K, V> {
     private static final float DEFAULT_LOAD_FACTOR = 0.5f;
     private static final int DEFAULT_INITIAL_CAPACITY = 11;
 
-    private final Map.Entry<K, V> tomb = new Entry<>(null, null);
+    private final Map.Entry<K, V> tomb = new Entry<>();
 
     private Map.Entry<?, ?>[] internalTable;
     private int initialCapacity;
     private int count;
     private float loadFactor;
     private transient int modCount;
+    private int capacity;
 
     private transient Set<K> keySet = null;
     private transient Set<Map.Entry<K, V>> entrySet = null;
@@ -31,6 +32,7 @@ public class OAHashtable<K, V> implements Map<K, V> {
         this.internalTable = new Map.Entry<?, ?>[initialCapacity];
 
         this.initialCapacity = initialCapacity;
+        capacity = initialCapacity;
         this.loadFactor = DEFAULT_LOAD_FACTOR;
         this.count = 0;
         modCount = 0;
@@ -82,11 +84,10 @@ public class OAHashtable<K, V> implements Map<K, V> {
         int originalIndex = convertToIndex(key);
         Map.Entry<K, V> entry = (Map.Entry<K, V>) internalTable[originalIndex];
         int fountId = -1;
-        int index = originalIndex + 1;
+        int index = originalIndex;
         V old = null;
 
-        while (index != originalIndex) {
-
+         do {
             if ((entry == null) || (tomb == entry)) {
                 fountId = index;
             }
@@ -105,7 +106,7 @@ public class OAHashtable<K, V> implements Map<K, V> {
                 index = 0;
             }
             entry = (Map.Entry<K, V>) this.internalTable[index];
-        }
+        } while (index != originalIndex);
 
         if (needsRehashing()) {
             rehash();
@@ -138,11 +139,11 @@ public class OAHashtable<K, V> implements Map<K, V> {
         assert (key != null);
         int trueHash = key.hashCode();
         int originalIndex = convertToIndex(key.hashCode());
-        int index = originalIndex + 1;
+        int index = originalIndex ;
 
         Map.Entry<K, V> entry = (Map.Entry<K, V>) internalTable[originalIndex];
 
-        while (index != originalIndex) {
+        do {
             if (entry == null) {
                 return -1;
             } else if (entry.getKey() != null && trueHash == entry.getKey().hashCode()) {
@@ -154,7 +155,7 @@ public class OAHashtable<K, V> implements Map<K, V> {
                 index = 0;
             }
             entry = (Map.Entry<K, V>) internalTable[index];
-        }
+        } while (index != originalIndex);
         return -1;
     }
 
@@ -221,17 +222,24 @@ public class OAHashtable<K, V> implements Map<K, V> {
         int oldLength = internalTable.length;
         Map.Entry<?, ?>[] oldTable = internalTable;
         int newLength = oldLength * 2 + 1;
+
         internalTable = new Map.Entry<?, ?>[newLength];
         for (int i = 0; i < oldLength; i++) {
             Map.Entry<K, V> entry = (Map.Entry<K, V>) oldTable[i];
-            this.put(entry.getKey(), entry.getValue());
+            if(entry != null) {
+                this.put(entry.getKey(), entry.getValue());
+            }
         }
+        capacity = newLength;
     }
 
     private boolean contains(Object value) {
         if (value == null) throw new NullPointerException("value cannot be null");
-        for (int i = 0; i < internalTable.length; i++) {
-            return value.equals(internalTable[i].getValue());
+
+        for (Map.Entry<?, ?> item : internalTable) {
+            if (item != null && value.equals(item.getValue())) {
+                return true;
+            }
         }
         return false;
     }
@@ -246,6 +254,10 @@ public class OAHashtable<K, V> implements Map<K, V> {
 
         private K key;
         private V value;
+
+        Entry() {
+
+        }
 
         Entry(K key, V value) {
             if (key == null) throw new IllegalArgumentException("key cannot be null");
@@ -313,6 +325,16 @@ public class OAHashtable<K, V> implements Map<K, V> {
         }
 
         @Override
+        public boolean containsAll(Collection<?> c){
+            for (K key : (Collection<K>) c ) {
+                if(key != null && contains(key)){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
         public boolean remove(Object o) {
             return (OAHashtable.this.remove(o) != null);
         }
@@ -324,154 +346,189 @@ public class OAHashtable<K, V> implements Map<K, V> {
 
         private class KeySetIterator implements Iterator<K> {
 
+            int traversed;
+            int index;
+            boolean next;
+            int originalModCount;
+
+            private KeySetIterator() {
+                traversed = 0;
+                index = -1;
+                next = false;
+                originalModCount = OAHashtable.this.modCount;
+            }
+
             @Override
             public boolean hasNext() {
-                return false;
+                return traversed < OAHashtable.this.count;
             }
 
             @Override
             public K next() {
-                return null;
+                if (OAHashtable.this.modCount != originalModCount) {
+                    throw new ConcurrentModificationException("Concurrent modification detected");
+                }
+                index++;
+                Map.Entry<K, V> current = (Map.Entry<K, V>) internalTable[index];
+                while (current == null || current == tomb) {
+                    index++;
+                    current = (Map.Entry<K, V>) internalTable[index];
+                }
+                traversed++;
+                next = true;
+
+                return current.getKey();
             }
 
             @Override
             public void remove() {
-
+                if (OAHashtable.this.modCount != originalModCount) {
+                    throw new ConcurrentModificationException("Concurrent modification detected");
+                }
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                internalTable[index] = tomb;
+                originalModCount++;
+                modCount++;
+                OAHashtable.this.count--;
+                next = false;
             }
         }
     }
 
-    private class ValueCollection implements Collection<V> {
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public boolean contains(Object o) {
-            return false;
-        }
+    private class ValueCollection extends AbstractCollection<V> {
 
         @Override
         public Iterator<V> iterator() {
-            return null;
+            return new ValueCollectionIterator();
         }
 
         @Override
-        public Object[] toArray() {
-            return new Object[0];
+        public int size() {
+            return OAHashtable.this.size();
         }
 
-        @Override
-        public <T> T[] toArray(T[] a) {
-            return null;
-        }
+        private class ValueCollectionIterator implements Iterator<V> {
 
-        @Override
-        public boolean add(V v) {
-            return false;
-        }
+            int traversed;
+            int index;
+            boolean next;
+            int originalModCount;
 
-        @Override
-        public boolean remove(Object o) {
-            return false;
-        }
+            private ValueCollectionIterator() {
+                traversed = 0;
+                index = -1;
+                next = false;
+                originalModCount = OAHashtable.this.modCount;
+            }
 
-        @Override
-        public boolean containsAll(Collection<?> c) {
-            return false;
-        }
+            @Override
+            public boolean hasNext() {
+                return traversed < OAHashtable.this.count;
+            }
 
-        @Override
-        public boolean addAll(Collection<? extends V> c) {
-            return false;
-        }
+            @Override
+            public V next() {
+                if (OAHashtable.this.modCount != originalModCount) {
+                    throw new ConcurrentModificationException("Concurrent modification detected");
+                }
+                index++;
+                Map.Entry<K, V> current = (Map.Entry<K, V>) internalTable[index];
+                while (current == null || current == tomb) {
+                    index++;
+                    current = (Map.Entry<K, V>) internalTable[index];
+                }
+                traversed++;
+                next = true;
 
-        @Override
-        public boolean removeAll(Collection<?> c) {
-            return false;
-        }
+                return current.getValue();
+            }
 
-        @Override
-        public boolean retainAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public void clear() {
-
+            @Override
+            public void remove() {
+                if (OAHashtable.this.modCount != originalModCount) {
+                    throw new ConcurrentModificationException("Concurrent modification detected");
+                }
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                internalTable[index] = tomb;
+                originalModCount++;
+                modCount++;
+                OAHashtable.this.count--;
+                next = false;
+            }
         }
     }
 
-    private class EntrySet implements Set<Map.Entry<K, V>> {
+    private class EntrySet extends AbstractSet<Map.Entry<K, V>> {
+
+
+        @Override
+        public Iterator<Map.Entry<K, V>> iterator() {
+            return new OAHashtable.EntrySet.EntrySetIterator();
+        }
+
         @Override
         public int size() {
             return 0;
         }
 
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
+        private class EntrySetIterator implements Iterator<Map.Entry<K, V>> {
 
-        @Override
-        public boolean contains(Object o) {
-            return false;
-        }
+            int traversed;
+            int index;
+            boolean next;
+            int originalModCount;
 
-        @Override
-        public Iterator<Map.Entry<K, V>> iterator() {
-            return null;
-        }
+            private EntrySetIterator() {
+                traversed = 0;
+                index = -1;
+                next = false;
+                originalModCount = OAHashtable.this.modCount;
+            }
 
-        @Override
-        public Object[] toArray() {
-            return new Object[0];
-        }
+            @Override
+            public boolean hasNext() {
+                return traversed < OAHashtable.this.count;
+            }
 
-        @Override
-        public <T> T[] toArray(T[] a) {
-            return null;
-        }
+            @Override
+            public Map.Entry<K, V> next() {
+                if (OAHashtable.this.modCount != originalModCount) {
+                    throw new ConcurrentModificationException("Concurrent modification detected");
+                }
+                index++;
+                Map.Entry<K, V> current = (Map.Entry<K, V>) internalTable[index];
+                while (current == null || current == tomb) {
+                    index++;
+                    current = (Map.Entry<K, V>) internalTable[index];
+                }
+                traversed++;
+                next = true;
 
-        @Override
-        public boolean add(Map.Entry<K, V> kvEntry) {
-            return false;
-        }
+                return current;
+            }
 
-        @Override
-        public boolean remove(Object o) {
-            return false;
+            @Override
+            public void remove() {
+                if (OAHashtable.this.modCount != originalModCount) {
+                    throw new ConcurrentModificationException("Concurrent modification detected");
+                }
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                internalTable[index] = tomb;
+                originalModCount++;
+                modCount++;
+                OAHashtable.this.count--;
+                next = false;
+            }
         }
+    }
 
-        @Override
-        public boolean containsAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean addAll(Collection<? extends Map.Entry<K, V>> c) {
-            return false;
-        }
-
-        @Override
-        public boolean retainAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean removeAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public void clear() {
-
-        }
+    public int getCapacity() {
+        return capacity;
     }
 }
