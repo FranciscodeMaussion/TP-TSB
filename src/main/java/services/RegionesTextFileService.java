@@ -7,10 +7,12 @@ import services.strategies.impl.RegionCircuitoStrategy;
 import services.strategies.impl.RegionDistritoStrategy;
 import services.strategies.impl.RegionSeccionStrategy;
 import soporte.OAHashtable;
+import soporte.Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -32,7 +34,7 @@ public class RegionesTextFileService {
 
 
     public Map getRegiones() {
-        Map table = new OAHashtable();
+        Map table = new Hashtable();
         Scanner fileReader;
         try {
             fileReader = new Scanner(new File(path));
@@ -45,7 +47,14 @@ public class RegionesTextFileService {
             LOG.debug(line);
             String[] campos = line.split(SEPARATOR);
 
-            strategies.get(campos[CODIGO_REGION].length()).process(campos, table);
+            RegionStrategy estrategia = Utils.obtenerEstrategia(campos[CODIGO_REGION], strategies);
+
+            if (estrategia != null) {
+                estrategia.process(campos, table);
+            } else {
+                LOG.info("Fallo busqueda para codigo: {}", campos[CODIGO_REGION]);
+            }
+
         }
         LOG.info("Table: {}", table);
         return table;

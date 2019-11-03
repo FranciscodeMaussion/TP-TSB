@@ -1,10 +1,9 @@
 package negocio;
 
-import soporte.OAHashtable;
-
+import java.util.Hashtable;
 import java.util.Map;
 
-public class Distrito{
+public class Distrito {
     private String codigo;
     private String descripcion;
     private Map secciones;
@@ -12,7 +11,7 @@ public class Distrito{
     public Distrito(String codigo, String descripcion) {
         this.codigo = codigo;
         this.descripcion = descripcion;
-        this.secciones = new OAHashtable();
+        this.secciones = new Hashtable();
     }
 
     public void setDescripcion(String descripcion) {

@@ -4,12 +4,14 @@ import services.MesasTextFileService;
 import services.PostulacionesTextFileService;
 import services.RegionesTextFileService;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import static constants.Constants.*;
 
 
 public class Pais {
+
     private Map resultados;
     private Map postulaciones;
     private Map regiones;
@@ -28,11 +30,23 @@ public class Pais {
     }
 
     public void cargarDescripcionRegiones() {
-        regiones = descripcionPostulaciones.getPostulaciones();
+        regiones = descripcionRegiones.getRegiones();
     }
 
     public void cargarResultados() {
         resultados = mesasTotalesAgrupacion.sumarPorAgrupacion();
+    }
+
+    public int getAgrupacionesCargadas(){
+        return postulaciones.size();
+    }
+
+    public int getRegionesCargadas(){
+        return regiones.size();
+    }
+
+    public  Iterator<Map.Entry> printResultados() {
+        return resultados.entrySet().iterator();
     }
 
 

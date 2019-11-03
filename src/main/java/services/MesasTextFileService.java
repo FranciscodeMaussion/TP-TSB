@@ -31,6 +31,7 @@ public class MesasTextFileService {
             LOG.error("Error loading file", e);
             return null;
         }
+        fileReader.nextLine(); // Salteamos el header
         while (fileReader.hasNextLine()) {
             String line = fileReader.nextLine();
             LOG.debug(line);

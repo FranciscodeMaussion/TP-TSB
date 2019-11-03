@@ -1,10 +1,9 @@
 package negocio;
 
-import soporte.OAHashtable;
-
+import java.util.Hashtable;
 import java.util.Map;
 
-public class Seccion{
+public class Seccion {
     private String codigo;
     private String descripcion;
     private Map circuitos;
@@ -13,7 +12,7 @@ public class Seccion{
     public Seccion(String codigo, String descripcion) {
         this.codigo = codigo;
         this.descripcion = descripcion;
-        this.circuitos = new OAHashtable();
+        this.circuitos = new Hashtable();
     }
 
     public Map getChilds() {
