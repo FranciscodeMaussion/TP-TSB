@@ -390,8 +390,8 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
     protected Object clone() throws CloneNotSupportedException 
     {
         // TODO
-        TSBHashtableDA<K, V> t = (TSBHashtableDA<K, V>)super.clone();
-
+        TSBHashtableDA<K, V> t = new TSBHashtableDA<>();
+        t.putAll(this);
         return t;
     }
 
@@ -761,7 +761,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
      * contiene datos ella misma, sino que accede y gestiona directamente datos
      * de otra fuente), por lo que no tiene atributos y sus métodos gestionan en
      * forma directa el contenido de la tabla. Están soportados los metodos para
-     * eliminar un objeto (remove()), eliminar todo el contenido (clear) y la  
+     * eliminar un objeto (remove()), eliminar el contenido (clear) y la
      * creación de un Iterator (que incluye el método Iterator.remove()).
      */
     private class KeySet extends AbstractSet<K> {
@@ -861,7 +861,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
      * contiene datos ella misma, sino que accede y gestiona directamente datos
      * de otra fuente), por lo que no tiene atributos y sus métodos gestionan en
      * forma directa el contenido de la tabla. Están soportados los metodos para
-     * eliminar un objeto (remove()), eliminar todo el contenido (clear) y la  
+     * eliminar un objeto (remove()), eliminar l contenido (clear) y la
      * creación de un Iterator (que incluye el método Iterator.remove()).
      */
     private class EntrySet extends AbstractSet<Map.Entry<K, V>> {
@@ -937,7 +937,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
      * no contiene datos ella misma, sino que accede y gestiona directamente los
      * de otra fuente), por lo que no tiene atributos y sus métodos gestionan en
      * forma directa el contenido de la tabla. Están soportados los metodos para
-     * eliminar un objeto (remove()), eliminar todo el contenido (clear) y la  
+     * eliminar un objeto (remove()), eliminar el contenido (clear) y la
      * creación de un Iterator (que incluye el método Iterator.remove()).
      */
     private class ValueCollection extends AbstractCollection<V> {
