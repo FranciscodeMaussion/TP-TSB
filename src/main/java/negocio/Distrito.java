@@ -19,6 +19,10 @@ public class Distrito {
         this.descripcion = descripcion;
     }
 
+    public String getDescripcion() {
+        return descripcion;
+    }
+
     public Map getChilds() {
         return secciones;
     }

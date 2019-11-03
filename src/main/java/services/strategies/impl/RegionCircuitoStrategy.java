@@ -3,6 +3,8 @@ package services.strategies.impl;
 import negocio.Circuito;
 import negocio.Distrito;
 import negocio.Seccion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import services.strategies.RegionStrategy;
 
 import java.util.Map;
@@ -12,6 +14,8 @@ import static constants.Constants.*;
 public class RegionCircuitoStrategy implements RegionStrategy {
 
     private static RegionCircuitoStrategy instance;
+    private static final Logger LOG = LoggerFactory.getLogger(RegionCircuitoStrategy.class);
+
 
     private RegionCircuitoStrategy() {
     }
@@ -26,27 +30,33 @@ public class RegionCircuitoStrategy implements RegionStrategy {
     @Override
     public void process(String[] campos, Map table) {
         Seccion seccion = null;
-        String distritoCode = campos[CODIGO_REGION].substring(0, LENGTH_DISTRITO - 1);
-        String seccionCode = campos[CODIGO_REGION].substring(LENGTH_DISTRITO, LENGTH_SECCION - 1);
+        String distritoCode = campos[CODIGO_REGION].substring(0, LENGTH_DISTRITO);
+        String seccionCode = campos[CODIGO_REGION].substring(LENGTH_DISTRITO, LENGTH_SECCION);
         String circuitoCode = campos[CODIGO_REGION].substring(LENGTH_SECCION);
-
-        Circuito circuito = new Circuito(circuitoCode, campos[NOMBRE_REGION]);
+        LOG.debug("Distrito: " + distritoCode + " Seccion: " + seccionCode + " Circuito: " + circuitoCode);
 
         Distrito distrito = (Distrito) table.get(distritoCode);
         if (distrito == null) {
+            LOG.error("Distrito default: " + distritoCode);
             distrito = new Distrito(distritoCode, DEFAULT_NAME);
-            table.put(distritoCode, distrito);
         }
-        Map distritoTable = distrito.getChilds();
 
+        Map distritoTable = distrito.getChilds();
         seccion = (Seccion) distritoTable.get(seccionCode);
         if (seccion == null) {
+            LOG.error("Seccion default: " + seccionCode);
             seccion = new Seccion(seccionCode, DEFAULT_NAME);
         }
 
         Map seccionTable = seccion.getChilds();
+        Circuito circuito = new Circuito(circuitoCode, campos[NOMBRE_REGION]);
+
         seccionTable.put(circuitoCode, circuito);
+        seccion.setChilds(seccionTable);
 
         distritoTable.put(seccionCode, seccion);
+        distrito.setChilds(distritoTable);
+
+        table.put(distritoCode, distrito);
     }
 }

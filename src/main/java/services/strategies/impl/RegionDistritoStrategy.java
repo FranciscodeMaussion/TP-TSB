@@ -5,8 +5,7 @@ import services.strategies.RegionStrategy;
 
 import java.util.Map;
 
-import static constants.Constants.CODIGO_REGION;
-import static constants.Constants.NOMBRE_REGION;
+import static constants.Constants.*;
 
 public class RegionDistritoStrategy implements RegionStrategy {
 
@@ -27,10 +26,13 @@ public class RegionDistritoStrategy implements RegionStrategy {
         Distrito distrito = (Distrito) table.get(campos[CODIGO_REGION]);
         if (distrito == null) {
             distrito = new Distrito(campos[CODIGO_REGION], campos[NOMBRE_REGION]);
+            table.put(campos[CODIGO_REGION], distrito);
         } else {
             // May verify default name
-            distrito.setDescripcion(campos[NOMBRE_REGION]);
+            if (distrito.getDescripcion().equals(DEFAULT_NAME)) {
+                distrito.setDescripcion(campos[NOMBRE_REGION]);
+                table.put(campos[CODIGO_REGION], distrito);
+            }
         }
-        table.put(campos[CODIGO_REGION], distrito);
     }
 }
