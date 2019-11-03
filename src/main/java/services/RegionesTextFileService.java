@@ -1,7 +1,8 @@
 package services;
 
+import negocio.Circuito;
 import negocio.Distrito;
-import negocio.Distrito;
+import negocio.Seccion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.strategies.RegionStrategy;
@@ -13,9 +14,7 @@ import soporte.Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import static constants.Constants.*;
 
@@ -37,6 +36,7 @@ public class RegionesTextFileService {
     public Map getRegiones() {
         Map<Integer, Distrito> table = new TSBHashtableDA<>();
         Scanner fileReader;
+        int count = 0;
         try {
             fileReader = new Scanner(new File(path));
         } catch (FileNotFoundException e) {
@@ -51,6 +51,7 @@ public class RegionesTextFileService {
             RegionStrategy estrategia = Utils.obtenerEstrategia(campos[CODIGO_REGION], strategies);
 
             if (estrategia != null) {
+                count++;
                 estrategia.process(campos, table);
             } else {
                 LOG.info("Fallo busqueda para codigo: {}", campos[CODIGO_REGION]);
@@ -58,7 +59,37 @@ public class RegionesTextFileService {
 
         }
         LOG.info("Table: {}", table);
+        validate(count, table);
         return table;
+    }
+
+    public void validate(int count, Map table) {
+        LOG.info("Lineas: {}", count);
+
+        Collection<Distrito> distritos = table.values();
+        Iterator<Distrito> iterator = distritos.iterator();
+        int index = 0;
+        int seccionesIndex = 0;
+        int circuitosIndex = 0;
+        while (iterator.hasNext()) {
+            Distrito distrito = iterator.next();
+            Collection<Seccion> secciones = distrito.getChilds().values();
+            Iterator<Seccion> seccionesIterator = secciones.iterator();
+            while (seccionesIterator.hasNext()) {
+                Seccion seccion = seccionesIterator.next();
+                Collection<Circuito> circuitos = seccion.getChilds().values();
+                Iterator<Circuito> circuitosIterator = circuitos.iterator();
+                while (circuitosIterator.hasNext()) {
+                    Circuito circuito = circuitosIterator.next();
+                    circuitosIndex++;
+                }
+                seccionesIndex++;
+            }
+            index++;
+        }
+
+        LOG.info("Distritos: {}, Secciones: {}, Circuitos: {}, Total: {}", index, seccionesIndex, circuitosIndex, index + seccionesIndex + circuitosIndex);
+
     }
 
     @Override

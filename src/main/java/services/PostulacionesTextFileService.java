@@ -31,7 +31,6 @@ public class PostulacionesTextFileService {
             LOG.error("No se puede leer el archivo", e);
             return null;
         }
-        fileReader.nextLine(); // Salteamos el header
         while (fileReader.hasNextLine()) {
             String line = fileReader.nextLine();
             LOG.debug(line);

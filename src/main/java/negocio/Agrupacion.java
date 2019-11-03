@@ -10,4 +10,13 @@ public class Agrupacion {
         this.codigoAgrupacion = codigoAgrupacion;
         this.nombreAgrupacion = nombreAgrupacion;
     }
+
+    @Override
+    public String toString() {
+        return "Agrupacion{" +
+                "codigoCategoria='" + codigoCategoria + '\'' +
+                ", codigoAgrupacion=" + codigoAgrupacion +
+                ", nombreAgrupacion='" + nombreAgrupacion + '\'' +
+                '}';
+    }
 }
