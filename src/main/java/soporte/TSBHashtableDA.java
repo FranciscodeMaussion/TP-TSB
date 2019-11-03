@@ -827,7 +827,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
                 }
                 index++;
                 Entry<K, V> current = (Entry<K, V>) table[index];
-                while (current == null || current.getState() == TOMBSTONE) {
+                while (current.getState() == OPEN || current.getState() == TOMBSTONE) {
                     index++;
                     current = (Entry<K, V>) table[index];
                 }
@@ -863,144 +863,70 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
      * forma directa el contenido de la tabla. Están soportados los metodos para
      * eliminar un objeto (remove()), eliminar todo el contenido (clear) y la  
      * creación de un Iterator (que incluye el método Iterator.remove()).
-     */    
-    private class EntrySet extends AbstractSet<Map.Entry<K, V>> 
-    {
+     */
+    private class EntrySet extends AbstractSet<Map.Entry<K, V>> {
+
 
         @Override
-        public Iterator<Map.Entry<K, V>> iterator() 
-        {
-            return new EntrySetIterator();
-        }
-
-        /*
-         * Verifica si esta vista (y por lo tanto la tabla) contiene al par 
-         * que entra como parámetro (que debe ser de la clase Entry).
-         */
-        @Override
-        public boolean contains(Object o) 
-        {
-            // TODO
-            if(o == null) { return false; } 
-            if(!(o instanceof Entry)) { return false; }
-            
-            return false;
-        }
-
-        /*
-         * Elimina de esta vista (y por lo tanto de la tabla) al par que entra
-         * como parámetro (y que debe ser de tipo Entry).
-         */
-        @Override
-        public boolean remove(Object o) 
-        {
-            // TODO
-            if(o == null) { throw new NullPointerException("remove(): parámetro null");}
-            if(!(o instanceof Entry)) { return false; }
-
-            return false;
+        public Iterator<Map.Entry<K, V>> iterator() {
+            return new TSBHashtableDA.EntrySet.EntrySetIterator();
         }
 
         @Override
-        public int size() 
-        {
-            return TSBHashtableDA.this.count;
+        public int size() {
+            return 0;
         }
 
-        @Override
-        public void clear() 
-        {
-            TSBHashtableDA.this.clear();
-        }
-        
-        private class EntrySetIterator implements Iterator<Map.Entry<K, V>>
-        {
-            // REVISAR y TODO Agregar los atributos que necesiten...
+        private class EntrySetIterator implements Iterator<Map.Entry<K, V>> {
 
-            // flag para controlar si remove() está bien invocado...
-            private boolean next_ok;
-            
-            // el valor que debería tener el modCount de la tabla completa...
-            private int expected_modCount;
-            
-            /*
-             * Crea un iterador comenzando en la primera lista. Activa el 
-             * mecanismo fail-fast.
-             */
-            public EntrySetIterator()
-            {
-                // TODO
+            int traversed;
+            int index;
+            boolean next;
+            int originalModCount;
 
-                next_ok = false;
-                expected_modCount = TSBHashtableDA.this.modCount;
+            private EntrySetIterator() {
+                traversed = 0;
+                index = -1;
+                next = false;
+                originalModCount = TSBHashtableDA.this.modCount;
             }
 
-            /*
-             * Determina si hay al menos un elemento en la tabla que no haya 
-             * sido retornado por next(). 
-             */
             @Override
-            public boolean hasNext() 
-            {
-                // TODO
-
-                return true;
+            public boolean hasNext() {
+                return traversed < TSBHashtableDA.this.count;
             }
 
-            /*
-             * Retorna el siguiente elemento disponible en la tabla.
-             */
             @Override
-            public Map.Entry<K, V> next() 
-            {
-                //TODO
-
-                // control: fail-fast iterator...
-                if(TSBHashtableDA.this.modCount != expected_modCount)
-                {    
-                    throw new ConcurrentModificationException("next(): modificación inesperada de tabla...");
+            public Map.Entry<K, V> next() {
+                if (TSBHashtableDA.this.modCount != originalModCount) {
+                    throw new ConcurrentModificationException("Concurrent modification detected");
                 }
-                
-                if(!hasNext()) 
-                {
-                    throw new NoSuchElementException("next(): no existe el elemento pedido...");
+                index++;
+                Entry<K, V> current = (Entry<K, V>) table[index];
+                while (current.getState() == OPEN || current.getState() == TOMBSTONE) {
+                    index++;
+                    current = (Entry<K, V>) table[index];
                 }
-                
+                traversed++;
+                next = true;
 
-                // avisar que next() fue invocado con éxito...
-                next_ok = true;
-                
-                // y retornar el elemento alcanzado...
-                return null;
+                return current;
             }
-            
-            /*
-             * Remueve el elemento actual de la tabla, dejando el iterador en la
-             * posición anterior al que fue removido. El elemento removido es el
-             * que fue retornado la última vez que se invocó a next(). El método
-             * sólo puede ser invocado una vez por cada invocación a next().
-             */
+
             @Override
-            public void remove() 
-            {
-                // TODO
-
-                if(!next_ok) 
-                { 
-                    throw new IllegalStateException("remove(): debe invocar a next() antes de remove()..."); 
+            public void remove() {
+                if (TSBHashtableDA.this.modCount != originalModCount) {
+                    throw new ConcurrentModificationException("Concurrent modification detected");
                 }
-                
-
-                // avisar que el remove() válido para next() ya se activó...
-                next_ok = false;
-                                
-                // la tabla tiene un elementon menos...
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                table[index] = new Entry<>(null, null, TOMBSTONE);
+                originalModCount++;
+                modCount++;
                 TSBHashtableDA.this.count--;
-
-                // fail_fast iterator...
-                TSBHashtableDA.this.modCount++;
-                expected_modCount++;
-            }     
+                next = false;
+            }
         }
     }    
     
@@ -1013,122 +939,69 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
      * forma directa el contenido de la tabla. Están soportados los metodos para
      * eliminar un objeto (remove()), eliminar todo el contenido (clear) y la  
      * creación de un Iterator (que incluye el método Iterator.remove()).
-     */ 
-    private class ValueCollection extends AbstractCollection<V> 
-    {
-        @Override
-        public Iterator<V> iterator() 
-        {
-            return new ValueCollectionIterator();
-        }
-        
-        @Override
-        public int size() 
-        {
-            return TSBHashtableDA.this.count;
-        }
-        
-        @Override
-        public boolean contains(Object o) 
-        {
-            return TSBHashtableDA.this.containsValue(o);
-        }
-        
-        @Override
-        public void clear() 
-        {
-            TSBHashtableDA.this.clear();
-        }
-        
-        private class ValueCollectionIterator implements Iterator<V>
-        {
-            // REVISAR y TODO Agregar los atributos que necesiten...
+     */
+    private class ValueCollection extends AbstractCollection<V> {
 
-            // flag para controlar si remove() está bien invocado...
-            private boolean next_ok;
-            
-            // el valor que debería tener el modCount de la tabla completa...
-            private int expected_modCount;
-            
-            /*
-             * Crea un iterador comenzando en la primera lista. Activa el 
-             * mecanismo fail-fast.
-             */
-            public ValueCollectionIterator()
-            {
-                // TODO
+        @Override
+        public Iterator<V> iterator() {
+            return new TSBHashtableDA.ValueCollection.ValueCollectionIterator();
+        }
 
-                next_ok = false;
-                expected_modCount = TSBHashtableDA.this.modCount;
+        @Override
+        public int size() {
+            return TSBHashtableDA.this.size();
+        }
+
+        private class ValueCollectionIterator implements Iterator<V> {
+
+            int traversed;
+            int index;
+            boolean next;
+            int originalModCount;
+
+            private ValueCollectionIterator() {
+                traversed = 0;
+                index = -1;
+                next = false;
+                originalModCount = TSBHashtableDA.this.modCount;
             }
 
-            /*
-             * Determina si hay al menos un elemento en la tabla que no haya 
-             * sido retornado por next(). 
-             */
             @Override
-            public boolean hasNext() 
-            {
-                // TODO
-
-                return true;
+            public boolean hasNext() {
+                return traversed < TSBHashtableDA.this.count;
             }
 
-            /*
-             * Retorna el siguiente elemento disponible en la tabla.
-             */
             @Override
-            public V next() 
-            {
-                // TODO
-
-                // control: fail-fast iterator...
-                if(TSBHashtableDA.this.modCount != expected_modCount)
-                {    
-                    throw new ConcurrentModificationException("next(): modificación inesperada de tabla...");
+            public V next() {
+                if (TSBHashtableDA.this.modCount != originalModCount) {
+                    throw new ConcurrentModificationException("Concurrent modification detected");
                 }
-                
-                if(!hasNext()) 
-                {
-                    throw new NoSuchElementException("next(): no existe el elemento pedido...");
+                index++;
+                Entry<K, V> current = (Entry<K, V>) table[index];
+                while (current.getState() == OPEN || current.getState() == TOMBSTONE) {
+                    index++;
+                    current = (Entry<K, V>) table[index];
                 }
-                
+                traversed++;
+                next = true;
 
-                // avisar que next() fue invocado con éxito...
-                next_ok = true;
-                
-                // y retornar la clave del elemento alcanzado...
-                V value = null;
-                return value;
+                return current.getValue();
             }
-            
-            /*
-             * Remueve el elemento actual de la tabla, dejando el iterador en la
-             * posición anterior al que fue removido. El elemento removido es el
-             * que fue retornado la última vez que se invocó a next(). El método
-             * sólo puede ser invocado una vez por cada invocación a next().
-             */
+
             @Override
-            public void remove() 
-            {
-                // TODO
-
-                if(!next_ok) 
-                { 
-                    throw new IllegalStateException("remove(): debe invocar a next() antes de remove()..."); 
+            public void remove() {
+                if (TSBHashtableDA.this.modCount != originalModCount) {
+                    throw new ConcurrentModificationException("Concurrent modification detected");
                 }
-                
-
-                // avisar que el remove() válido para next() ya se activó...
-                next_ok = false;
-                                
-                // la tabla tiene un elementon menos...
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                table[index] = new Entry<>(null, null, TOMBSTONE);
+                originalModCount++;
+                modCount++;
                 TSBHashtableDA.this.count--;
-
-                // fail_fast iterator...
-                TSBHashtableDA.this.modCount++;
-                expected_modCount++;
-            }     
+                next = false;
+            }
         }
     }
 }
