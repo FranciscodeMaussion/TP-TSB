@@ -31,7 +31,7 @@ public class Distrito {
         this.secciones = secciones;
     }
 
-    public int getSize(){
+    public int getSize() {
         return 0;
     }
 
