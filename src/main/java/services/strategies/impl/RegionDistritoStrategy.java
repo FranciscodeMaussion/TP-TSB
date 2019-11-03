@@ -28,6 +28,7 @@ public class RegionDistritoStrategy implements RegionStrategy {
         if (distrito == null) {
             distrito = new Distrito(campos[CODIGO_REGION], campos[NOMBRE_REGION]);
         } else {
+            // May verify default name
             distrito.setDescripcion(campos[NOMBRE_REGION]);
         }
         table.put(campos[CODIGO_REGION], distrito);

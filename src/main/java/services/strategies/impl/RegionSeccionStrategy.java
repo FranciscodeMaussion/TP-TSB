@@ -27,22 +27,22 @@ public class RegionSeccionStrategy implements RegionStrategy {
         String distritoCode = campos[CODIGO_REGION].substring(0, LENGTH_DISTRITO - 1);
         String seccionCode = campos[CODIGO_REGION].substring(LENGTH_DISTRITO);
 
-        Seccion seccion = (Seccion) table.get(seccionCode);
+        Distrito distrito = (Distrito) table.get(distritoCode);
+        if (distrito == null) {
+            distrito = new Distrito(distritoCode, DEFAULT_NAME);
+        }
+        Map distritoTable = distrito.getChilds();
+
+        Seccion seccion = (Seccion) distritoTable.get(seccionCode);
         if (seccion == null) {
             seccion = new Seccion(seccionCode, campos[NOMBRE_REGION]);
         } else {
             seccion.setDescripcion(campos[NOMBRE_REGION]);
         }
 
-        Distrito distrito = (Distrito) table.get(distritoCode);
-        if (distrito == null) {
-            distrito = new Distrito(distritoCode, DEFAULT_NAME);
-            table.put(distritoCode, distrito);
-        }
-
-        Map distritoTable = distrito.getChilds();
         distritoTable.put(seccionCode, seccion);
-        distrito.setChilds(distritoTable);
+
+        table.put(distritoCode, distrito);
     }
 
 }

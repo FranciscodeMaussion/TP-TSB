@@ -36,20 +36,17 @@ public class RegionCircuitoStrategy implements RegionStrategy {
         if (distrito == null) {
             distrito = new Distrito(distritoCode, DEFAULT_NAME);
             table.put(distritoCode, distrito);
-        } else {
-            seccion = (Seccion) table.get(seccionCode);
         }
+        Map distritoTable = distrito.getChilds();
 
+        seccion = (Seccion) distritoTable.get(seccionCode);
         if (seccion == null) {
             seccion = new Seccion(seccionCode, DEFAULT_NAME);
         }
 
-        Map circuitoTable = seccion.getChilds();
-        circuitoTable.put(circuitoCode, circuito);
-        seccion.setChilds(circuitoTable);
+        Map seccionTable = seccion.getChilds();
+        seccionTable.put(circuitoCode, circuito);
 
-        Map distritoTable = distrito.getChilds();
         distritoTable.put(seccionCode, seccion);
-        distrito.setChilds(distritoTable);
     }
 }

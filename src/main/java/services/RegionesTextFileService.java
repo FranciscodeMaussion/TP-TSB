@@ -1,5 +1,7 @@
 package services;
 
+import negocio.Distrito;
+import negocio.Distrito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.strategies.RegionStrategy;
@@ -33,7 +35,7 @@ public class RegionesTextFileService {
 
 
     public Map getRegiones() {
-        Map table = new TSBHashtableDA();
+        Map<Integer, Distrito> table = new TSBHashtableDA<>();
         Scanner fileReader;
         try {
             fileReader = new Scanner(new File(path));
