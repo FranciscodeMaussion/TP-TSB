@@ -33,8 +33,8 @@ public class RegionesTextFileService {
     }
 
 
-    public Map getRegiones() {
-        Map<Integer, Distrito> table = new TSBHashtableDA<>();
+    public Map<String, Distrito> getRegiones() {
+        Map<String, Distrito> table = new TSBHashtableDA<>();
         Scanner fileReader;
         int count = 0;
         try {
@@ -59,7 +59,7 @@ public class RegionesTextFileService {
 
         }
         LOG.info("Table: {}", table);
-        validate(count, table);
+        //validate(count, table);
         return table;
     }
 

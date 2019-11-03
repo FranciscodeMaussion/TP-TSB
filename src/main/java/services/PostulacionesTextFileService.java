@@ -22,8 +22,8 @@ public class PostulacionesTextFileService {
         this.path = path;
     }
 
-    public Map getPostulaciones() {
-        Map table = new TSBHashtableDA();
+    public Map<String, Agrupacion> getPostulaciones() {
+        Map<String, Agrupacion> table = new TSBHashtableDA<>();
         Scanner fileReader;
         try {
             fileReader = new Scanner(new File(path));

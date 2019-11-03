@@ -28,7 +28,7 @@ public class RegionCircuitoStrategy implements RegionStrategy {
     }
 
     @Override
-    public void process(String[] campos, Map table) {
+    public void process(String[] campos, Map<String, Distrito> table) {
         Seccion seccion = null;
         String distritoCode = campos[CODIGO_REGION].substring(0, LENGTH_DISTRITO);
         String seccionCode = campos[CODIGO_REGION].substring(LENGTH_DISTRITO, LENGTH_SECCION);

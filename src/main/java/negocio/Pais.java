@@ -3,6 +3,7 @@ package negocio;
 import services.MesasTextFileService;
 import services.PostulacionesTextFileService;
 import services.RegionesTextFileService;
+import soporte.Acumulador;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -12,9 +13,9 @@ import static constants.Constants.*;
 
 public class Pais {
 
-    private Map resultados;
-    private Map postulaciones;
-    private Map regiones;
+    private Map<String, Acumulador> resultados;
+    private Map<String, Agrupacion> postulaciones;
+    private Map<String, Distrito> regiones;
     private MesasTextFileService mesasTotalesAgrupacion;
     private PostulacionesTextFileService descripcionPostulaciones;
     private RegionesTextFileService descripcionRegiones;
@@ -34,7 +35,7 @@ public class Pais {
     }
 
     public void cargarResultados() {
-        resultados = mesasTotalesAgrupacion.sumarPorAgrupacion();
+        resultados = mesasTotalesAgrupacion.sumarVotos(regiones, postulaciones);
     }
 
     public int getAgrupacionesCargadas() {
@@ -45,7 +46,7 @@ public class Pais {
         return regiones.size();
     }
 
-    public Iterator<Map.Entry> printResultados() {
+    public Iterator<Map.Entry<String, Acumulador>> printResultados() {
         return resultados.entrySet().iterator();
     }
 

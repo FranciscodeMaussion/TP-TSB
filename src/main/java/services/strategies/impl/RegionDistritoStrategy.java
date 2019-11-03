@@ -22,7 +22,7 @@ public class RegionDistritoStrategy implements RegionStrategy {
     }
 
     @Override
-    public void process(String[] campos, Map table) {
+    public void process(String[] campos, Map<String, Distrito> table) {
         Distrito distrito = (Distrito) table.get(campos[CODIGO_REGION]);
         if (distrito == null) {
             distrito = new Distrito(campos[CODIGO_REGION], campos[NOMBRE_REGION]);

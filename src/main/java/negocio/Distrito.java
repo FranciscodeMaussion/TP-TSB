@@ -1,10 +1,12 @@
 package negocio;
 
+import soporte.Acumulador;
 import soporte.TSBHashtableDA;
 
 import java.util.Map;
 
-public class Distrito {
+public class Distrito implements Votable{
+    private Acumulador cantidadVotos;
     private String codigo;
     private String descripcion;
     private Map<Integer, Seccion> secciones;
@@ -13,6 +15,7 @@ public class Distrito {
         this.codigo = codigo;
         this.descripcion = descripcion;
         this.secciones = new TSBHashtableDA<>();
+        this.cantidadVotos = new Acumulador(0);
     }
 
     public void setDescripcion(String descripcion) {
@@ -42,5 +45,10 @@ public class Distrito {
                 ", descripcion='" + descripcion + '\'' +
                 ", secciones=" + secciones.toString() +
                 '}';
+    }
+
+    @Override
+    public Acumulador getAcumulador() {
+        return cantidadVotos;
     }
 }
