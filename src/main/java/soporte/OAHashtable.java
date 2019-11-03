@@ -31,8 +31,8 @@ public class OAHashtable<K, V> implements Map<K, V> {
 
         this.internalTable = new Map.Entry<?, ?>[initialCapacity];
 
-        this.initialCapacity = initialCapacity;
-        capacity = initialCapacity;
+        this.initialCapacity = nextPrime(initialCapacity);
+        capacity = this.initialCapacity;
         this.loadFactor = DEFAULT_LOAD_FACTOR;
         this.count = 0;
         modCount = 0;
@@ -85,6 +85,7 @@ public class OAHashtable<K, V> implements Map<K, V> {
         Map.Entry<K, V> entry = (Map.Entry<K, V>) internalTable[originalIndex];
         int fountId = -1;
         int index = originalIndex;
+        int counter = 0;
         V old = null;
 
          do {
@@ -101,8 +102,9 @@ public class OAHashtable<K, V> implements Map<K, V> {
             if (entry == null) {
                 break;
             }
-            index++;
-            if (index == internalTable.length) {
+            counter++;
+            index += (int)Math.pow(counter, 2);;
+            if (index >= internalTable.length) {
                 index = 0;
             }
             entry = (Map.Entry<K, V>) this.internalTable[index];
@@ -221,7 +223,7 @@ public class OAHashtable<K, V> implements Map<K, V> {
         this.modCount++;
         int oldLength = internalTable.length;
         Map.Entry<?, ?>[] oldTable = internalTable;
-        int newLength = oldLength * 2 + 1;
+        int newLength = nextPrime((int)(oldLength * 1.5f));
 
         internalTable = new Map.Entry<?, ?>[newLength];
         for (int i = 0; i < oldLength; i++) {
@@ -530,5 +532,30 @@ public class OAHashtable<K, V> implements Map<K, V> {
 
     public int getCapacity() {
         return capacity;
+    }
+
+    private boolean isPrime(int n)
+    {
+        // negativos no admitidos en este contexto...
+        if(n < 0) return false;
+
+        if(n == 1) return false;
+        if(n == 2) return true;
+        if(n % 2 == 0) return false;
+
+        int raiz = (int) Math.pow(n, 0.5);
+        for(int div = 3;  div <= raiz; div += 2)
+        {
+            if(n % div == 0) return false;
+        }
+
+        return true;
+    }
+
+    private int nextPrime (int n)
+    {
+        if(n % 2 == 0) n++;
+        for(; !isPrime(n); n+=2);
+        return n;
     }
 }
