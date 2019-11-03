@@ -1,12 +1,12 @@
 package services;
 
+import negocio.Distrito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.strategies.RegionStrategy;
 import services.strategies.impl.RegionCircuitoStrategy;
 import services.strategies.impl.RegionDistritoStrategy;
 import services.strategies.impl.RegionSeccionStrategy;
-import soporte.OAHashtable;
 import soporte.Utils;
 
 import java.io.File;
@@ -34,7 +34,7 @@ public class RegionesTextFileService {
 
 
     public Map getRegiones() {
-        Map table = new Hashtable();
+        Map<Integer, Distrito> table = new Hashtable<>();
         Scanner fileReader;
         try {
             fileReader = new Scanner(new File(path));

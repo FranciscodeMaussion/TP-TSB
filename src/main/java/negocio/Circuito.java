@@ -8,4 +8,12 @@ public class Circuito {
         this.codigo = codigo;
         this.descripcion = descripcion;
     }
+
+    @Override
+    public String toString() {
+        return "Circuito{" +
+                "codigo='" + codigo + '\'' +
+                ", descripcion='" + descripcion + '\'' +
+                '}';
+    }
 }

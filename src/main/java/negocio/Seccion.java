@@ -6,13 +6,13 @@ import java.util.Map;
 public class Seccion {
     private String codigo;
     private String descripcion;
-    private Map circuitos;
+    private Map<Integer, Circuito> circuitos;
 
 
     public Seccion(String codigo, String descripcion) {
         this.codigo = codigo;
         this.descripcion = descripcion;
-        this.circuitos = new Hashtable();
+        this.circuitos = new Hashtable<>();
     }
 
     public Map getChilds() {
@@ -27,4 +27,12 @@ public class Seccion {
         this.descripcion = descripcion;
     }
 
+    @Override
+    public String toString() {
+        return "Seccion{" +
+                "codigo='" + codigo + '\'' +
+                ", descripcion='" + descripcion + '\'' +
+                ", circuitos=" + circuitos +
+                '}';
+    }
 }
