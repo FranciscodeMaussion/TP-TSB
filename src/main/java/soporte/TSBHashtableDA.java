@@ -29,6 +29,8 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
     
     // el tamaño inicial de la tabla (tamaño con el que fue creada)...
     private int initial_capacity;
+
+    private int capacity;
     
     // la cantidad de objetos que contiene la tabla...
     private int count;
@@ -100,7 +102,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
                 initial_capacity = nextPrime(initial_capacity);
             }
         }
-        
+        capacity = initial_capacity;
         this.table = new Object[initial_capacity];
         for(int i=0; i<table.length; i++)
         {
@@ -155,7 +157,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
     @Override
     public boolean containsKey(Object key) 
     {
-        return (this.get((K)key) != null);
+        return (this.get(key) != null);
     }
 
     /**
@@ -181,12 +183,16 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
      *         tabla.
      */
     @Override
-    public V get(Object key) 
-    {
-        // HACER...
-        if(key == null) throw new NullPointerException("get(): parámetro null");
-       
-        return null;
+    public V get(Object key) {
+        if (key == null) throw new NullPointerException("key cannot be null");
+        int ik = this.h((K)key);
+        int index = search_for_index((K)key, ik);
+
+        if (index != -1) {
+            return ((Map.Entry<K, V>)table[index]).getValue();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -238,12 +244,19 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
      * @throws NullPointerException - if the key is null.
      */
     @Override
-    public V remove(Object key) 
-    {
-        // HACER...
-        if(key == null) throw new NullPointerException("remove(): parámetro null");
-
-        return null;
+    public V remove(Object key) {
+        if (key == null) throw new NullPointerException("key cannot be null");
+        int ik = this.h((K)key);
+        int index = search_for_index((K)key, ik);
+        if (index != -1) {
+            V old = ((Map.Entry<K, V>)table[index]).getValue();
+            table[index] = new Entry<>(key, null, TOMBSTONE);
+            this.count--;
+            this.modCount++;
+            return old;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -268,10 +281,12 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
      * inicialmente tuvo al ser creado el objeto.
      */
     @Override
-    public void clear() 
-    {
-        // HACER... obvio...
-
+    public void clear() {
+        this.count = 0;
+        this.modCount++;
+        for (int i = 0; i < table.length; i++) {
+            table[i] = null;
+        }
     }
 
     /**
@@ -374,7 +389,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
     @Override
     protected Object clone() throws CloneNotSupportedException 
     {
-        // HACER...
+        // TODO
         TSBHashtableDA<K, V> t = (TSBHashtableDA<K, V>)super.clone();
 
         return t;
@@ -466,11 +481,14 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
      * @param value el objeto a buscar en la tabla.
      * @return true si alguna clave está asociada efectivamente a ese value.
      */
-    public boolean contains(Object value)
-    {
-        // HACER...
-        if(value == null) return false;
-        
+    private boolean contains(Object value) {
+        if (value == null) throw new NullPointerException("value cannot be null");
+
+        for (Object item : table) {
+            if (item != null && value.equals(((Map.Entry<?, ?>)item).getValue())) {
+                return true;
+            }
+        }
         return false;
     }
     
@@ -488,7 +506,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
         
         // nuevo tamaño: primer primo mayor o igual al 50% del anterior...
         int new_length = nextPrime((int)(old_length * 1.5f));
-        
+        capacity = new_length;
         // crear el nuevo arreglo de tamaño new_length...
         Object temp[] = new Object[new_length];
         for(int j=0; j<temp.length; j++) { temp[j] = new Entry<>(null, null); }
@@ -641,6 +659,10 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
         }
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
+
     //************************ Clases Internas.
 
     /*
@@ -741,123 +763,94 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
      * forma directa el contenido de la tabla. Están soportados los metodos para
      * eliminar un objeto (remove()), eliminar todo el contenido (clear) y la  
      * creación de un Iterator (que incluye el método Iterator.remove()).
-     */    
-    private class KeySet extends AbstractSet<K> 
-    {
+     */
+    private class KeySet extends AbstractSet<K> {
+
         @Override
-        public Iterator<K> iterator() 
-        {
-            return new KeySetIterator();
+        public Iterator<K> iterator() {
+            return new TSBHashtableDA.KeySet.KeySetIterator();
         }
-        
+
         @Override
-        public int size() 
-        {
+        public int size() {
             return TSBHashtableDA.this.count;
         }
-        
+
         @Override
-        public boolean contains(Object o) 
-        {
+        public boolean contains(Object o) {
             return TSBHashtableDA.this.containsKey(o);
         }
-        
+
         @Override
-        public boolean remove(Object o) 
-        {
+        public boolean containsAll(Collection<?> c) {
+            for (K key : (Collection<K>) c) {
+                if (key != null && contains(key)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
             return (TSBHashtableDA.this.remove(o) != null);
         }
-        
+
         @Override
-        public void clear() 
-        {
+        public void clear() {
             TSBHashtableDA.this.clear();
         }
-        
-        private class KeySetIterator implements Iterator<K>
-        {
-            // REVISAR y HACER... Agregar los atributos que necesiten...
 
-            // flag para controlar si remove() está bien invocado...
-            private boolean next_ok;
-            
-            // el valor que debería tener el modCount de la tabla completa...
-            private int expected_modCount;
-            
-            /*
-             * Crea un iterador comenzando en la primera lista. Activa el 
-             * mecanismo fail-fast.
-             */
-            public KeySetIterator()
-            {
-                // HACER...
-                next_ok = false;
-                expected_modCount = TSBHashtableDA.this.modCount;
+        private class KeySetIterator implements Iterator<K> {
+
+            int traversed;
+            int index;
+            boolean next;
+            int originalModCount;
+
+            private KeySetIterator() {
+                traversed = 0;
+                index = -1;
+                next = false;
+                originalModCount = TSBHashtableDA.this.modCount;
             }
 
-            /*
-             * Determina si hay al menos un elemento en la tabla que no haya 
-             * sido retornado por next(). 
-             */
             @Override
-            public boolean hasNext() 
-            {
-                // HACER...
-                return true;
+            public boolean hasNext() {
+                return traversed < TSBHashtableDA.this.count;
             }
 
-            /*
-             * Retorna el siguiente elemento disponible en la tabla.
-             */
             @Override
-            public K next() 
-            {
-                // REVISAR Y HACER...
+            public K next() {
+                if (TSBHashtableDA.this.modCount != originalModCount) {
+                    throw new ConcurrentModificationException("Concurrent modification detected");
+                }
+                index++;
+                Entry<K, V> current = (Entry<K, V>) table[index];
+                while (current == null || current.getState() == TOMBSTONE) {
+                    index++;
+                    current = (Entry<K, V>) table[index];
+                }
+                traversed++;
+                next = true;
 
-                // control: fail-fast iterator...
-                if(TSBHashtableDA.this.modCount != expected_modCount)
-                {    
-                    throw new ConcurrentModificationException("next(): modificación inesperada de tabla...");
-                }
-                
-                if(!hasNext()) 
-                {
-                    throw new NoSuchElementException("next(): no existe el elemento pedido...");
-                }
-                
-                // avisar que next() fue invocado con éxito...
-                next_ok = true;
-                
-                // y retornar la clave del elemento alcanzado...
-                return null;
+                return current.getKey();
             }
-            
-            /*
-             * Remueve el elemento actual de la tabla, dejando el iterador en la
-             * posición anterior al que fue removido. El elemento removido es el
-             * que fue retornado la última vez que se invocó a next(). El método
-             * sólo puede ser invocado una vez por cada invocación a next().
-             */
-            @Override
-            public void remove() 
-            {
-                // REVISAR Y HACER...
 
-                if(!next_ok) 
-                { 
-                    throw new IllegalStateException("remove(): debe invocar a next() antes de remove()..."); 
+            @Override
+            public void remove() {
+                if (TSBHashtableDA.this.modCount != originalModCount) {
+                    throw new ConcurrentModificationException("Concurrent modification detected");
                 }
-                
-                // avisar que el remove() válido para next() ya se activó...
-                next_ok = false;
-                                
-                // la tabla tiene un elementon menos...
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                table[index] = new Entry<>(null, null, TOMBSTONE);
+                originalModCount++;
+                modCount++;
                 TSBHashtableDA.this.count--;
-
-                // fail_fast iterator...
-                TSBHashtableDA.this.modCount++;
-                expected_modCount++;
-            }     
+                next = false;
+            }
         }
     }
 
@@ -887,7 +880,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
         @Override
         public boolean contains(Object o) 
         {
-            // HACER...
+            // TODO
             if(o == null) { return false; } 
             if(!(o instanceof Entry)) { return false; }
             
@@ -901,7 +894,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
         @Override
         public boolean remove(Object o) 
         {
-            // HACER...
+            // TODO
             if(o == null) { throw new NullPointerException("remove(): parámetro null");}
             if(!(o instanceof Entry)) { return false; }
 
@@ -922,7 +915,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
         
         private class EntrySetIterator implements Iterator<Map.Entry<K, V>>
         {
-            // REVISAR y HACER... Agregar los atributos que necesiten...
+            // REVISAR y TODO Agregar los atributos que necesiten...
 
             // flag para controlar si remove() está bien invocado...
             private boolean next_ok;
@@ -936,7 +929,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
              */
             public EntrySetIterator()
             {
-                // HACER...
+                // TODO
 
                 next_ok = false;
                 expected_modCount = TSBHashtableDA.this.modCount;
@@ -949,7 +942,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
             @Override
             public boolean hasNext() 
             {
-                // HACER...
+                // TODO
 
                 return true;
             }
@@ -960,7 +953,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
             @Override
             public Map.Entry<K, V> next() 
             {
-                //HACER...
+                //TODO
 
                 // control: fail-fast iterator...
                 if(TSBHashtableDA.this.modCount != expected_modCount)
@@ -990,7 +983,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
             @Override
             public void remove() 
             {
-                // HACER...
+                // TODO
 
                 if(!next_ok) 
                 { 
@@ -1049,7 +1042,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
         
         private class ValueCollectionIterator implements Iterator<V>
         {
-            // REVISAR y HACER... Agregar los atributos que necesiten...
+            // REVISAR y TODO Agregar los atributos que necesiten...
 
             // flag para controlar si remove() está bien invocado...
             private boolean next_ok;
@@ -1063,7 +1056,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
              */
             public ValueCollectionIterator()
             {
-                // HACER...
+                // TODO
 
                 next_ok = false;
                 expected_modCount = TSBHashtableDA.this.modCount;
@@ -1076,7 +1069,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
             @Override
             public boolean hasNext() 
             {
-                // HACER...
+                // TODO
 
                 return true;
             }
@@ -1087,7 +1080,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
             @Override
             public V next() 
             {
-                // HACER...
+                // TODO
 
                 // control: fail-fast iterator...
                 if(TSBHashtableDA.this.modCount != expected_modCount)
@@ -1118,7 +1111,7 @@ public class TSBHashtableDA<K,V> implements Map<K,V>, Cloneable, Serializable
             @Override
             public void remove() 
             {
-                // HACER...
+                // TODO
 
                 if(!next_ok) 
                 { 

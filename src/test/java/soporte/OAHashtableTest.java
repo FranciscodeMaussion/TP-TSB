@@ -10,11 +10,11 @@ import static org.junit.Assert.*;
 
 public class OAHashtableTest {
 
-    private OAHashtable<String, Integer> oaHashtable;
+    private TSBHashtableDA<String, Integer> oaHashtable;
 
     @Before
     public void setUp() {
-        oaHashtable = new OAHashtable<>();
+        oaHashtable = new TSBHashtableDA<>();
 
     }
 
