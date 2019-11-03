@@ -47,7 +47,7 @@ public class RegionSeccionStrategy implements RegionStrategy {
         }
 
         distritoTable.put(seccionCode, seccion);
-        distrito.setChilds(distritoTable);
+        //distrito.setChilds(distritoTable);
 
         table.put(distritoCode, distrito);
     }

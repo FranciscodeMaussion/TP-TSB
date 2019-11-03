@@ -31,6 +31,10 @@ public class Distrito {
         this.secciones = secciones;
     }
 
+    public int getSize(){
+        return 0;
+    }
+
     @Override
     public String toString() {
         return "Distrito{" +

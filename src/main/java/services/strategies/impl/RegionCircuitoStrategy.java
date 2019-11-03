@@ -52,10 +52,10 @@ public class RegionCircuitoStrategy implements RegionStrategy {
         Circuito circuito = new Circuito(circuitoCode, campos[NOMBRE_REGION]);
 
         seccionTable.put(circuitoCode, circuito);
-        seccion.setChilds(seccionTable);
+        //seccion.setChilds(seccionTable);
 
         distritoTable.put(seccionCode, seccion);
-        distrito.setChilds(distritoTable);
+        //distrito.setChilds(distritoTable);
 
         table.put(distritoCode, distrito);
     }

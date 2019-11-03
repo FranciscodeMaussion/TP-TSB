@@ -1,7 +1,6 @@
 package services;
 
 import negocio.Distrito;
-import negocio.Distrito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.strategies.RegionStrategy;
@@ -37,6 +36,7 @@ public class RegionesTextFileService {
     public Map getRegiones() {
         Map<Integer, Distrito> table = new TSBHashtableDA<>();
         Scanner fileReader;
+        int count = 0;
         try {
             fileReader = new Scanner(new File(path));
         } catch (FileNotFoundException e) {
@@ -51,6 +51,7 @@ public class RegionesTextFileService {
             RegionStrategy estrategia = Utils.obtenerEstrategia(campos[CODIGO_REGION], strategies);
 
             if (estrategia != null) {
+                count++;
                 estrategia.process(campos, table);
             } else {
                 LOG.info("Fallo busqueda para codigo: {}", campos[CODIGO_REGION]);
@@ -58,6 +59,10 @@ public class RegionesTextFileService {
 
         }
         LOG.info("Table: {}", table);
+        LOG.info("Lineas: {}", count);
+
+        LOG.info("Distritos: {}, Secciones: {}, Circuitos: {}", table.size());
+
         return table;
     }
 
