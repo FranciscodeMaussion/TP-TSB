@@ -1,6 +1,7 @@
 package negocio;
 
-import java.util.Hashtable;
+import soporte.TSBHashtableDA;
+
 import java.util.Map;
 
 public class Distrito {
@@ -11,7 +12,7 @@ public class Distrito {
     public Distrito(String codigo, String descripcion) {
         this.codigo = codigo;
         this.descripcion = descripcion;
-        this.secciones = new Hashtable();
+        this.secciones = new TSBHashtableDA();
     }
 
     public void setDescripcion(String descripcion) {

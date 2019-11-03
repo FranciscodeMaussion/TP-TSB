@@ -37,15 +37,15 @@ public class Pais {
         resultados = mesasTotalesAgrupacion.sumarPorAgrupacion();
     }
 
-    public int getAgrupacionesCargadas(){
+    public int getAgrupacionesCargadas() {
         return postulaciones.size();
     }
 
-    public int getRegionesCargadas(){
+    public int getRegionesCargadas() {
         return regiones.size();
     }
 
-    public  Iterator<Map.Entry> printResultados() {
+    public Iterator<Map.Entry> printResultados() {
         return resultados.entrySet().iterator();
     }
 

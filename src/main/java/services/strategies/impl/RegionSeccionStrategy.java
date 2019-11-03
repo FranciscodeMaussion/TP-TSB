@@ -15,8 +15,8 @@ public class RegionSeccionStrategy implements RegionStrategy {
     private RegionSeccionStrategy() {
     }
 
-    public static RegionSeccionStrategy getInstance(){
-        if(instance == null){
+    public static RegionSeccionStrategy getInstance() {
+        if (instance == null) {
             instance = new RegionSeccionStrategy();
         }
         return instance;
@@ -24,7 +24,7 @@ public class RegionSeccionStrategy implements RegionStrategy {
 
     @Override
     public void process(String[] campos, Map table) {
-        String distritoCode = campos[CODIGO_REGION].substring(0, LENGTH_DISTRITO-1);
+        String distritoCode = campos[CODIGO_REGION].substring(0, LENGTH_DISTRITO - 1);
         String seccionCode = campos[CODIGO_REGION].substring(LENGTH_DISTRITO);
 
         Seccion seccion = (Seccion) table.get(seccionCode);

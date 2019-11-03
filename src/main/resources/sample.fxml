@@ -10,10 +10,10 @@
       <Button fx:id="btnCargarRegiones" disable="true" layoutX="26.0" layoutY="102.0" mnemonicParsing="false" onAction="#cargarRegiones" text="Cargar Regiones" />
       <Button fx:id="btnCargarVotos" disable="true" layoutX="35.0" layoutY="145.0" mnemonicParsing="false" onAction="#cargarVotos" text="Cargar Votos" />
       <Label layoutX="287.0" layoutY="13.0" text="Path:" />
-      <Label fx:id="lblPath" layoutX="328.0" layoutY="13.0" />
-      <Label layoutX="170.0" layoutY="63.0" text="Agrupaciones:" />
-      <Label fx:id="lblAgrupaciones" layoutX="260.0" layoutY="63.0" />
-      <Label layoutX="170.0" layoutY="106.0" text="Regiones:" />
-      <Label fx:id="lblRegiones" layoutX="232.0" layoutY="106.0" />
+      <Label fx:id="lblPath" layoutX="345.0" layoutY="17.0" />
+      <Label layoutX="187.0" layoutY="67.0" text="Agrupaciones:" />
+      <Label fx:id="lblAgrupaciones" layoutX="277.0" layoutY="67.0" />
+      <Label layoutX="187.0" layoutY="110.0" text="Regiones:" />
+      <Label fx:id="lblRegiones" layoutX="249.0" layoutY="110.0" />
     </children>
 </AnchorPane>

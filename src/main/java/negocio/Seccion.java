@@ -1,6 +1,7 @@
 package negocio;
 
-import java.util.Hashtable;
+import soporte.TSBHashtableDA;
+
 import java.util.Map;
 
 public class Seccion {
@@ -12,7 +13,7 @@ public class Seccion {
     public Seccion(String codigo, String descripcion) {
         this.codigo = codigo;
         this.descripcion = descripcion;
-        this.circuitos = new Hashtable();
+        this.circuitos = new TSBHashtableDA();
     }
 
     public Map getChilds() {

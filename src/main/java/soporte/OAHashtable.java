@@ -88,22 +88,20 @@ public class OAHashtable<K, V> implements Map<K, V> {
         int counter = 0;
         V old = null;
 
-         do {
-            if ((entry == null) || (tomb == entry)) {
+        do {
+            if (entry == null) {
                 fountId = index;
-            }
-
-            if (entry != null && value.equals(entry.getValue())) {
+                break;
+            } else if (tomb == entry) {
+                fountId = index;
+            } else if (value.equals(entry.getValue())) {
                 fountId = index;
                 old = entry.getValue();
                 break;
             }
 
-            if (entry == null) {
-                break;
-            }
             counter++;
-            index += (int)Math.pow(counter, 2);;
+            index += (int) Math.pow(counter, 2);
             if (index >= internalTable.length) {
                 index = 0;
             }
@@ -112,6 +110,9 @@ public class OAHashtable<K, V> implements Map<K, V> {
 
         if (needsRehashing()) {
             rehash();
+        }
+        if(fountId == -1){
+            System.out.println("tu hermana");
         }
         Map.Entry<K, V> newEntry = new Entry<>(key, value);
         internalTable[fountId] = newEntry;
@@ -141,7 +142,7 @@ public class OAHashtable<K, V> implements Map<K, V> {
         assert (key != null);
         int trueHash = key.hashCode();
         int originalIndex = convertToIndex(key.hashCode());
-        int index = originalIndex ;
+        int index = originalIndex;
 
         Map.Entry<K, V> entry = (Map.Entry<K, V>) internalTable[originalIndex];
 
@@ -223,12 +224,12 @@ public class OAHashtable<K, V> implements Map<K, V> {
         this.modCount++;
         int oldLength = internalTable.length;
         Map.Entry<?, ?>[] oldTable = internalTable;
-        int newLength = nextPrime((int)(oldLength * 1.5f));
+        int newLength = nextPrime((int) (oldLength * 1.5f));
 
         internalTable = new Map.Entry<?, ?>[newLength];
         for (int i = 0; i < oldLength; i++) {
             Map.Entry<K, V> entry = (Map.Entry<K, V>) oldTable[i];
-            if(entry != null) {
+            if (entry != null) {
                 this.put(entry.getKey(), entry.getValue());
             }
         }
@@ -251,6 +252,34 @@ public class OAHashtable<K, V> implements Map<K, V> {
     }
 
     //Inner Class Entry
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    //Inner class KeySet
+
+    private boolean isPrime(int n) {
+        // negativos no admitidos en este contexto...
+        if (n < 0) return false;
+
+        if (n == 1) return false;
+        if (n == 2) return true;
+        if (n % 2 == 0) return false;
+
+        int raiz = (int) Math.pow(n, 0.5);
+        for (int div = 3; div <= raiz; div += 2) {
+            if (n % div == 0) return false;
+        }
+
+        return true;
+    }
+
+    private int nextPrime(int n) {
+        if (n % 2 == 0) n++;
+        for (; !isPrime(n); n += 2) ;
+        return n;
+    }
 
     private class Entry<K, V> implements Map.Entry<K, V> {
 
@@ -307,8 +336,6 @@ public class OAHashtable<K, V> implements Map<K, V> {
         }
     }
 
-    //Inner class KeySet
-
     private class KeySet extends AbstractSet<K> {
 
         @Override
@@ -327,9 +354,9 @@ public class OAHashtable<K, V> implements Map<K, V> {
         }
 
         @Override
-        public boolean containsAll(Collection<?> c){
-            for (K key : (Collection<K>) c ) {
-                if(key != null && contains(key)){
+        public boolean containsAll(Collection<?> c) {
+            for (K key : (Collection<K>) c) {
+                if (key != null && contains(key)) {
                     return true;
                 }
             }
@@ -528,34 +555,5 @@ public class OAHashtable<K, V> implements Map<K, V> {
                 next = false;
             }
         }
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    private boolean isPrime(int n)
-    {
-        // negativos no admitidos en este contexto...
-        if(n < 0) return false;
-
-        if(n == 1) return false;
-        if(n == 2) return true;
-        if(n % 2 == 0) return false;
-
-        int raiz = (int) Math.pow(n, 0.5);
-        for(int div = 3;  div <= raiz; div += 2)
-        {
-            if(n % div == 0) return false;
-        }
-
-        return true;
-    }
-
-    private int nextPrime (int n)
-    {
-        if(n % 2 == 0) n++;
-        for(; !isPrime(n); n+=2);
-        return n;
     }
 }

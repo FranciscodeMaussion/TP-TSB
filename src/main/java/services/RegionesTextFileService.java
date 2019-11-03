@@ -6,13 +6,12 @@ import services.strategies.RegionStrategy;
 import services.strategies.impl.RegionCircuitoStrategy;
 import services.strategies.impl.RegionDistritoStrategy;
 import services.strategies.impl.RegionSeccionStrategy;
-import soporte.OAHashtable;
+import soporte.TSBHashtableDA;
 import soporte.Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -34,7 +33,7 @@ public class RegionesTextFileService {
 
 
     public Map getRegiones() {
-        Map table = new Hashtable();
+        Map table = new TSBHashtableDA();
         Scanner fileReader;
         try {
             fileReader = new Scanner(new File(path));

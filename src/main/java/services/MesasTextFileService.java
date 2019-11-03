@@ -4,7 +4,7 @@ import constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soporte.Acumulador;
-import soporte.OAHashtable;
+import soporte.TSBHashtableDA;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,7 +23,7 @@ public class MesasTextFileService {
     }
 
     public Map sumarPorAgrupacion() {
-        Map table = new OAHashtable();
+        Map table = new TSBHashtableDA();
         Scanner fileReader;
         try {
             fileReader = new Scanner(new File(path));

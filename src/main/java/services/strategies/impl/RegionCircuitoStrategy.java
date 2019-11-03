@@ -16,8 +16,8 @@ public class RegionCircuitoStrategy implements RegionStrategy {
     private RegionCircuitoStrategy() {
     }
 
-    public static RegionCircuitoStrategy getInstance(){
-        if(instance == null) {
+    public static RegionCircuitoStrategy getInstance() {
+        if (instance == null) {
             instance = new RegionCircuitoStrategy();
         }
         return instance;
@@ -26,8 +26,8 @@ public class RegionCircuitoStrategy implements RegionStrategy {
     @Override
     public void process(String[] campos, Map table) {
         Seccion seccion = null;
-        String distritoCode = campos[CODIGO_REGION].substring(0, LENGTH_DISTRITO-1);
-        String seccionCode = campos[CODIGO_REGION].substring(LENGTH_DISTRITO, LENGTH_SECCION-1);
+        String distritoCode = campos[CODIGO_REGION].substring(0, LENGTH_DISTRITO - 1);
+        String seccionCode = campos[CODIGO_REGION].substring(LENGTH_DISTRITO, LENGTH_SECCION - 1);
         String circuitoCode = campos[CODIGO_REGION].substring(LENGTH_SECCION);
 
         Circuito circuito = new Circuito(circuitoCode, campos[NOMBRE_REGION]);

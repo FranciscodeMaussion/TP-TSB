@@ -80,7 +80,7 @@ public class OAHashtableTest {
     }
 
     @Test
-    public void get_ShouldWork_AfterRehash(){
+    public void get_ShouldWork_AfterRehash() {
         int value = 40;
         String key = "40";
         oaHashtable.put(key, value);
@@ -108,7 +108,7 @@ public class OAHashtableTest {
     }
 
     @Test
-    public void put_ShouldInsertCorrectly_WhenValuesWasNotPreviouslyInserted(){
+    public void put_ShouldInsertCorrectly_WhenValuesWasNotPreviouslyInserted() {
         int value = 5;
         Integer result = oaHashtable.put("", value);
 
@@ -119,7 +119,7 @@ public class OAHashtableTest {
     }
 
     @Test
-    public void put_ShouldRehash_WhenTableCapacityIsExceeded(){
+    public void put_ShouldRehash_WhenTableCapacityIsExceeded() {
         int initialCapacity = oaHashtable.getCapacity();
 
         for (int i = 0; i < initialCapacity + 1; i++) {
@@ -211,7 +211,7 @@ public class OAHashtableTest {
         Iterator<String> iterator = keySet.iterator();
 
         int index = 0;
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             String key = iterator.next();
             assertEquals(key, "" + index);
             index++;
@@ -239,7 +239,7 @@ public class OAHashtableTest {
         Iterator<Integer> iterator = collection.iterator();
 
         int index = 0;
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Integer value = iterator.next();
             assertEquals(value.intValue(), index);
             index++;
@@ -257,7 +257,7 @@ public class OAHashtableTest {
         int index = 0;
         int[] valueArray = new int[4];
         String[] keyArray = new String[4];
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Map.Entry<String, Integer> current = iterator.next();
             valueArray[index] = current.getValue();
             keyArray[index] = current.getKey();
