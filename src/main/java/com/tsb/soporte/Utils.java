@@ -37,6 +37,6 @@ public class Utils {
         TableColumn<Row, String> votosColumn = new TableColumn<>("Votos");
         votosColumn.setCellValueFactory(new PropertyValueFactory<>("column2"));
         table.getColumns().clear();
-        table.getColumns().addAll(nameColumn, idColumn, votosColumn);
+        table.getColumns().addAll(idColumn, nameColumn, votosColumn);
     }
 }

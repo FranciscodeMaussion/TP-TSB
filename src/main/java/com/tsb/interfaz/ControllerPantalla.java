@@ -38,6 +38,11 @@ public class ControllerPantalla {
     public Label lblCircuitos;
     public TableView<Row> tableVotosSeccion;
     public TableView<Row> tableVotosCircuito;
+    public Label lblTextHint;
+    public Tab tbAgrupaciones;
+    public Tab tbDistritos;
+    public Tab tbSecciones;
+    public Tab tbCircuitos;
     private Gestor gestor;
     private Pais pais = new Pais();
     private String path;
@@ -58,8 +63,10 @@ public class ControllerPantalla {
         }
 
         gestor.cargarDescripcionPostulaciones(pais, path);
+        lblTextHint.setVisible(false);
 
         btnCargarAgrupaciones.setDisable(true);
+        tbAgrupaciones.setDisable(false);
         btnCargarRegiones.setDisable(false);
         lblAgrupaciones.setText(lblAgrupaciones.getText() + pais.getAgrupacionesSize());
         Utils.initTableViewSeccion("Agrupacion", listAgrupacion, tableVotosAgrupacion);
@@ -76,6 +83,7 @@ public class ControllerPantalla {
             LOG.info("Agrupacion: {}, recibio: {}", current.getNombreAgrupacion(), current.getAcumulador().getCantidad());
         }
         listAgrupacion.sort((o1, o2) -> {
+            // TODO Consider to ask for order row
             Integer first = Integer.parseInt(o1.getColumn2());
             Integer second = Integer.parseInt(o2.getColumn2());
             return second.compareTo(first);
@@ -90,6 +98,7 @@ public class ControllerPantalla {
         lblSecciones.setText(lblSecciones.getText() + pais.getSeccionesSize());
         lblCircuitos.setText(lblCircuitos.getText() + pais.getCircuitosSize());
         btnCargarRegiones.setDisable(true);
+        tbDistritos.setDisable(false);
         btnCargarVotos.setDisable(false);
         //initTableViewDistrito();
         Utils.initTableViewSeccion("Distrito", listDistritos, tableVotosDistrito);
@@ -138,6 +147,7 @@ public class ControllerPantalla {
             Row rowItem = (Row) row.getItem();
             distritoSeleccionado = pais.getRegiones().get(rowItem.getColumn3());
             Map<String, Seccion> secciones = distritoSeleccionado.getChilds();
+            tbSecciones.setDisable(false);
 
             Utils.initTableViewSeccion("Seccion", listSecciones, tableVotosSeccion);
             popularSecciones(secciones.entrySet().iterator());
@@ -173,6 +183,7 @@ public class ControllerPantalla {
             Row rowItem = (Row) row.getItem();
             Seccion seccionSeleccionada = distritoSeleccionado.getChilds().get(rowItem.getColumn3());
             Map<String, Circuito> secciones = seccionSeleccionada.getChilds();
+            tbCircuitos.setDisable(false);
 
             Utils.initTableViewSeccion("Circuitos", listCircuitos, tableVotosCircuito);
             popularCircuitos(secciones.entrySet().iterator());
@@ -194,5 +205,19 @@ public class ControllerPantalla {
             Integer second = Integer.parseInt(o2.getColumn2());
             return second.compareTo(first);
         });
+    }
+
+    public void tabAgrupacionSelected() {
+        try {
+            lblTextHint.setVisible(false);
+        } catch (Exception ignored) {
+        }
+    }
+
+    public void tabRegionSelected() {
+        try {
+            lblTextHint.setVisible(true);
+        } catch (Exception ignored) {
+        }
     }
 }
