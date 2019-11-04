@@ -5,7 +5,7 @@ import com.tsb.soporte.TSBHashtableDA;
 
 import java.util.Map;
 
-public class Distrito implements Votable{
+public class Distrito implements Votable {
     private Acumulador cantidadVotos;
     private String codigo;
     private String descripcion;

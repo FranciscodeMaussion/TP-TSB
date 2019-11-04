@@ -14,14 +14,9 @@ public class Pais {
     private int[] regionesCount;
 
 
-    public int getAgrupacionesCargadas() {
+    public int getAgrupacionesSize() {
         return postulaciones.size();
     }
-
-    public int getRegionesCargadas() {
-        return regiones.size();
-    }
-
 
     public Iterator<Map.Entry<String, Agrupacion>> mostrarResultadosXAgrupacion() {
         return postulaciones.entrySet().iterator();
@@ -71,7 +66,7 @@ public class Pais {
         return resultados.size();
     }
 
-    public void setRegionesCount(int[] regionesCount){
+    public void setRegionesCount(int[] regionesCount) {
         this.regionesCount = regionesCount;
     }
 

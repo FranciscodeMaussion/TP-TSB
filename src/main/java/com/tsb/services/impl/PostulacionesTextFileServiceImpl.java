@@ -2,9 +2,9 @@ package com.tsb.services.impl;
 
 import com.tsb.negocio.Agrupacion;
 import com.tsb.services.PostulacionesTextFileService;
+import com.tsb.soporte.TSBHashtableDA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.tsb.soporte.TSBHashtableDA;
 import org.springframework.stereotype.Service;
 
 import java.io.File;

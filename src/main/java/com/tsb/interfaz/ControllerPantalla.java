@@ -1,18 +1,18 @@
 package com.tsb.interfaz;
 
 import com.tsb.gestores.Gestor;
+import com.tsb.negocio.Agrupacion;
+import com.tsb.negocio.Distrito;
+import com.tsb.negocio.Pais;
+import com.tsb.soporte.Row;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
-import com.tsb.negocio.Agrupacion;
-import com.tsb.negocio.Distrito;
-import com.tsb.negocio.Pais;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.tsb.soporte.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -62,7 +62,7 @@ public class ControllerPantalla {
         popularAgrupaciones();
     }
 
-    private void initTableViewAgrupacion(){
+    private void initTableViewAgrupacion() {
         listAgrupacion = FXCollections.observableArrayList();
         tableVotosAgrupacion.setItems(listAgrupacion);
         tableVotosAgrupacion.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -104,7 +104,7 @@ public class ControllerPantalla {
         popularDistritos();
     }
 
-    private void initTableViewDistrito(){
+    private void initTableViewDistrito() {
         listDistritos = FXCollections.observableArrayList();
         tableVotosDistrito.setItems(listDistritos);
         tableVotosDistrito.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

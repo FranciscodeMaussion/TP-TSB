@@ -2,7 +2,7 @@ package com.tsb.negocio;
 
 import com.tsb.soporte.Acumulador;
 
-public class Agrupacion implements Votable{
+public class Agrupacion implements Votable {
     private String codigoCategoria;
     private int codigoAgrupacion;
 

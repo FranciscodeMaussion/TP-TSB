@@ -2,9 +2,9 @@ package com.tsb.services.strategies.impl;
 
 import com.tsb.negocio.Distrito;
 import com.tsb.negocio.Seccion;
+import com.tsb.services.strategies.RegionStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.tsb.services.strategies.RegionStrategy;
 
 import java.util.Map;
 
