@@ -1,6 +1,10 @@
 package soporte;
 
 public class Acumulador {
+    public int getCantidad() {
+        return cantidad;
+    }
+
     private int cantidad;
 
     public Acumulador(int inicial) {

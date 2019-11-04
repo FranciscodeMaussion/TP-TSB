@@ -46,8 +46,13 @@ public class Pais {
         return regiones.size();
     }
 
-    public Iterator<Map.Entry<String, Acumulador>> printResultados() {
-        return resultados.entrySet().iterator();
+
+    public Iterator<Map.Entry<String, Agrupacion>> mostrarResultadosXAgrupacion(){
+        return postulaciones.entrySet().iterator();
+    }
+
+    public Iterator<Map.Entry<String, Distrito>> mostrarResultadosXDistrito() {
+        return regiones.entrySet().iterator();
     }
 
 

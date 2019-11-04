@@ -5,6 +5,11 @@ import soporte.Acumulador;
 public class Agrupacion implements Votable{
     private String codigoCategoria;
     private int codigoAgrupacion;
+
+    public String getNombreAgrupacion() {
+        return nombreAgrupacion;
+    }
+
     private String nombreAgrupacion;
     private Acumulador cantidadVotos;
 

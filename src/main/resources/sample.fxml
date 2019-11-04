@@ -2,18 +2,45 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="interfaz.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="interfaz.Controller">
     <children>
         <Button fx:id="btnCargarAgrupaciones" layoutX="14.0" layoutY="59.0" mnemonicParsing="false" onAction="#cargarAgrupaciones" text="Cargar Agrupaciones" />
       <Button fx:id="btnCargarRegiones" disable="true" layoutX="26.0" layoutY="102.0" mnemonicParsing="false" onAction="#cargarRegiones" text="Cargar Regiones" />
       <Button fx:id="btnCargarVotos" disable="true" layoutX="35.0" layoutY="145.0" mnemonicParsing="false" onAction="#cargarVotos" text="Cargar Votos" />
       <Label layoutX="287.0" layoutY="13.0" text="Path:" />
-      <Label fx:id="lblPath" layoutX="345.0" layoutY="17.0" />
+      <Label fx:id="lblPath" layoutX="342.0" layoutY="13.0" />
       <Label layoutX="187.0" layoutY="67.0" text="Agrupaciones:" />
       <Label fx:id="lblAgrupaciones" layoutX="277.0" layoutY="67.0" />
       <Label layoutX="187.0" layoutY="110.0" text="Regiones:" />
       <Label fx:id="lblRegiones" layoutX="249.0" layoutY="110.0" />
+      <TabPane fx:id="tabResultados" layoutX="8.0" layoutY="204.0" prefHeight="371.0" prefWidth="785.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="X Agrupacion">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tableVotosAgrupacion" layoutX="7.0" layoutY="7.0" prefHeight="331.0" prefWidth="778.0">
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="X Distrito">
+              <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                      <children>
+                          <TableView fx:id="tableVotosDistrito" layoutX="7.0" layoutY="7.0" prefHeight="331.0" prefWidth="778.0">
+                          </TableView>
+                      </children>
+                  </AnchorPane>
+              </content>
+          </Tab>
+        </tabs>
+      </TabPane>
     </children>
 </AnchorPane>
