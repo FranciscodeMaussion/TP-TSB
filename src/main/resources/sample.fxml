@@ -7,7 +7,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="interfaz.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tsb.interfaz.ControllerPantalla">
     <children>
         <Button fx:id="btnCargarAgrupaciones" layoutX="14.0" layoutY="59.0" mnemonicParsing="false" onAction="#cargarAgrupaciones" text="Cargar Agrupaciones" />
       <Button fx:id="btnCargarRegiones" disable="true" layoutX="26.0" layoutY="102.0" mnemonicParsing="false" onAction="#cargarRegiones" text="Cargar Regiones" />
