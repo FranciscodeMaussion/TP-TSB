@@ -9,7 +9,7 @@ public class Seccion implements Votable{
     private Acumulador cantidadVotos;
     private String codigo;
     private String descripcion;
-    private Map<Integer, Circuito> circuitos;
+    private Map<String, Circuito> circuitos;
 
 
     public Seccion(String codigo, String descripcion) {
@@ -19,11 +19,11 @@ public class Seccion implements Votable{
         this.cantidadVotos = new Acumulador(0);
     }
 
-    public Map getChilds() {
+    public Map<String, Circuito> getChilds() {
         return circuitos;
     }
 
-    public void setChilds(Map circuitos) {
+    public void setChilds(Map<String, Circuito> circuitos) {
         this.circuitos = circuitos;
     }
 
@@ -44,4 +44,5 @@ public class Seccion implements Votable{
     public Acumulador getAcumulador() {
         return cantidadVotos;
     }
+
 }

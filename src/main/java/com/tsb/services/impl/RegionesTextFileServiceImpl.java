@@ -63,6 +63,11 @@ public class RegionesTextFileServiceImpl implements RegionesTextFileService {
         return table;
     }
 
+    @Override
+    public int[] countRegiones(Map<String, Distrito> table) {
+        return new int[0];
+    }
+
     //TODO necesitamos esto?
     public void validate(int count, Map table) {
         LOG.info("Lineas: {}", count);

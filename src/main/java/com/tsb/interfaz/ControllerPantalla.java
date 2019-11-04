@@ -32,10 +32,13 @@ public class ControllerPantalla {
     public Button btnCargarVotos;
     public Label lblPath;
     public Label lblAgrupaciones;
-    public Label lblRegiones;
     public TabPane tabResultados;
     public TableView<Row> tableVotosAgrupacion;
     public TableView<Row> tableVotosDistrito;
+    public Label lblMesas;
+    public Label lblDistritos;
+    public Label lblSecciones;
+    public Label lblCircuitos;
 
     private Pais pais = new Pais();
     private String path;
@@ -54,7 +57,7 @@ public class ControllerPantalla {
 
         btnCargarAgrupaciones.setDisable(true);
         btnCargarRegiones.setDisable(false);
-        lblAgrupaciones.setText("" + pais.getAgrupacionesCargadas());
+        lblAgrupaciones.setText(lblAgrupaciones.getText() + pais.getAgrupacionesSize());
         initTableViewAgrupacion();
         popularAgrupaciones();
     }
@@ -92,7 +95,9 @@ public class ControllerPantalla {
 
         gestor.cargarDescripcionRegiones(pais, path);
 
-        lblRegiones.setText("" + pais.getRegionesCargadas());
+        lblDistritos.setText(lblDistritos.getText() + pais.getDistritosSize());
+        lblSecciones.setText(lblSecciones.getText() + pais.getSeccionesSize());
+        lblCircuitos.setText(lblCircuitos.getText() + pais.getCircuitosSize());
         btnCargarRegiones.setDisable(true);
         btnCargarVotos.setDisable(false);
         initTableViewDistrito();
@@ -130,7 +135,7 @@ public class ControllerPantalla {
 
     public void cargarVotos(ActionEvent actionEvent) {
         gestor.cargarResultados(pais, path);
-
+        lblMesas.setText(lblMesas.getText() + pais.getMesasSize());
         btnCargarVotos.setDisable(true);
         popularAgrupaciones();
         popularDistritos();

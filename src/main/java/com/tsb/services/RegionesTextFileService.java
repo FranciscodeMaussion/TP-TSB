@@ -7,5 +7,6 @@ import java.util.Map;
 public interface RegionesTextFileService {
 
     Map<String, Distrito> getRegiones(String path);
+    int[] countRegiones(Map<String, Distrito> table);
 
 }

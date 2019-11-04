@@ -11,6 +11,8 @@ public class Pais {
     private Map<String, Acumulador> resultados;
     private Map<String, Agrupacion> postulaciones;
     private Map<String, Distrito> regiones;
+    private int[] regionesCount;
+
 
     public int getAgrupacionesCargadas() {
         return postulaciones.size();
@@ -52,4 +54,25 @@ public class Pais {
     public void setRegiones(Map<String, Distrito> regiones) {
         this.regiones = regiones;
     }
+
+    public int getDistritosSize() {
+        return regionesCount[0];
+    }
+
+    public int getCircuitosSize() {
+        return regionesCount[1];
+    }
+
+    public int getSeccionesSize() {
+        return regionesCount[2];
+    }
+
+    public int getMesasSize() {
+        return resultados.size();
+    }
+
+    public void setRegionesCount(int[] regionesCount){
+        this.regionesCount = regionesCount;
+    }
+
 }
