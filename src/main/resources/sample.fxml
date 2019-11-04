@@ -34,13 +34,34 @@
               <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                       <children>
-                          <TableView fx:id="tableVotosDistrito" layoutX="7.0" layoutY="7.0" prefHeight="331.0" prefWidth="778.0">
+                          <TableView fx:id="tableVotosDistrito" layoutX="7.0" layoutY="7.0" onMouseClicked="#rowDistritoSelected" prefHeight="331.0" prefWidth="778.0">
                           </TableView>
                       </children>
                   </AnchorPane>
               </content>
           </Tab>
+            <Tab text="X Seccion">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <children>
+                            <TableView fx:id="tableVotosSeccion" layoutX="7.0" layoutY="7.0" onMouseClicked="#rowSeccionSelected" prefHeight="331.0" prefWidth="778.0">
+                            </TableView>
+                        </children>
+                    </AnchorPane>
+                </content>
+            </Tab>
+            <Tab text="X Circuito">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <children>
+                            <TableView fx:id="tableVotosCircuito" layoutX="7.0" layoutY="7.0" prefHeight="331.0" prefWidth="778.0">
+                            </TableView>
+                        </children>
+                    </AnchorPane>
+                </content>
+            </Tab>
         </tabs>
       </TabPane>
+      <Label layoutX="394.0" layoutY="136.0" prefHeight="69.0" prefWidth="342.0" text="Doble click en una region para ver el detalle de sus sub-regiones" />
     </children>
 </AnchorPane>

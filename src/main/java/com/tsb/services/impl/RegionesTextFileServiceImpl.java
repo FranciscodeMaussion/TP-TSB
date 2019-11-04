@@ -81,7 +81,6 @@ public class RegionesTextFileServiceImpl implements RegionesTextFileService {
                 Collection<Circuito> circuitos = seccion.getChilds().values();
                 Iterator<Circuito> circuitosIterator = circuitos.iterator();
                 while (circuitosIterator.hasNext()) {
-                    Circuito circuito = circuitosIterator.next();
                     circuitosIndex++;
                 }
                 seccionesIndex++;

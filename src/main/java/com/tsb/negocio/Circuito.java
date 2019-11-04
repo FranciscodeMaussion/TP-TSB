@@ -13,6 +13,10 @@ public class Circuito implements Votable{
         this.cantidadVotos = new Acumulador(0);
     }
 
+    public String getDescripcion() {
+        return descripcion;
+    }
+
     @Override
     public String toString() {
         return "Circuito{" +

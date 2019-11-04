@@ -9,7 +9,7 @@ public class Distrito implements Votable{
     private Acumulador cantidadVotos;
     private String codigo;
     private String descripcion;
-    private Map<Integer, Seccion> secciones;
+    private Map<String, Seccion> secciones;
 
     public Distrito(String codigo, String descripcion) {
         this.codigo = codigo;
@@ -26,7 +26,7 @@ public class Distrito implements Votable{
         return descripcion;
     }
 
-    public Map getChilds() {
+    public Map<String, Seccion> getChilds() {
         return secciones;
     }
 

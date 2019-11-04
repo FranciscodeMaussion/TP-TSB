@@ -1,15 +1,17 @@
 package com.tsb.interfaz;
 
 import com.tsb.gestores.Gestor;
+import com.tsb.negocio.*;
+import com.tsb.soporte.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
-import com.tsb.negocio.Agrupacion;
-import com.tsb.negocio.Distrito;
-import com.tsb.negocio.Pais;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.tsb.soporte.Row;
@@ -36,11 +38,18 @@ public class ControllerPantalla {
     public TabPane tabResultados;
     public TableView<Row> tableVotosAgrupacion;
     public TableView<Row> tableVotosDistrito;
+    public TableView<Row> tableVotosSeccion;
+    public TableView<Row> tableVotosCircuito;
 
     private Pais pais = new Pais();
     private String path;
-    private ObservableList<Row> listAgrupacion;
-    private ObservableList<Row> listDistritos;
+    private ObservableList<Row> listAgrupacion = FXCollections.observableArrayList();
+    private ObservableList<Row> listDistritos = FXCollections.observableArrayList();
+    private ObservableList<Row> listSecciones = FXCollections.observableArrayList();
+    private ObservableList<Row> listCircuitos = FXCollections.observableArrayList();
+
+    private Distrito distritoSeleccionado;
+    private Seccion seccionSeleccionada;
 
     public void cargarAgrupaciones(ActionEvent actionEvent) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -55,21 +64,8 @@ public class ControllerPantalla {
         btnCargarAgrupaciones.setDisable(true);
         btnCargarRegiones.setDisable(false);
         lblAgrupaciones.setText("" + pais.getAgrupacionesCargadas());
-        initTableViewAgrupacion();
+        Utils.initTableViewSeccion("Agrupacion", listAgrupacion, tableVotosAgrupacion);
         popularAgrupaciones();
-    }
-
-    private void initTableViewAgrupacion(){
-        listAgrupacion = FXCollections.observableArrayList();
-        tableVotosAgrupacion.setItems(listAgrupacion);
-        tableVotosAgrupacion.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        TableColumn<Row, String> nameColumn = new TableColumn<>("Agrupacion");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("column1"));
-
-        TableColumn<Row, String> votosColumn = new TableColumn<>("Votos");
-        votosColumn.setCellValueFactory(new PropertyValueFactory<>("column2"));
-        tableVotosAgrupacion.getColumns().clear();
-        tableVotosAgrupacion.getColumns().addAll(nameColumn, votosColumn);
     }
 
     private void popularAgrupaciones() {
@@ -78,7 +74,7 @@ public class ControllerPantalla {
         while (iterator.hasNext()) {
             Map.Entry<String, Agrupacion> entry = iterator.next();
             Agrupacion current = entry.getValue();
-            listAgrupacion.add(new Row(current.getNombreAgrupacion(), "" + current.getAcumulador().getCantidad()));
+            listAgrupacion.add(new Row(current.getNombreAgrupacion(), "" + current.getAcumulador().getCantidad(), entry.getKey()));
             LOG.info("Agrupacion: {}, recibio: {}", current.getNombreAgrupacion(), current.getAcumulador().getCantidad());
         }
         listAgrupacion.sort((o1, o2) -> {
@@ -95,21 +91,9 @@ public class ControllerPantalla {
         lblRegiones.setText("" + pais.getRegionesCargadas());
         btnCargarRegiones.setDisable(true);
         btnCargarVotos.setDisable(false);
-        initTableViewDistrito();
+        //initTableViewDistrito();
+        Utils.initTableViewSeccion("Distrito", listDistritos, tableVotosDistrito);
         popularDistritos();
-    }
-
-    private void initTableViewDistrito(){
-        listDistritos = FXCollections.observableArrayList();
-        tableVotosDistrito.setItems(listDistritos);
-        tableVotosDistrito.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        TableColumn<Row, String> nameColumn = new TableColumn<>("Distrito");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("column1"));
-
-        TableColumn<Row, String> votosColumn = new TableColumn<>("Votos");
-        votosColumn.setCellValueFactory(new PropertyValueFactory<>("column2"));
-        tableVotosDistrito.getColumns().clear();
-        tableVotosDistrito.getColumns().addAll(nameColumn, votosColumn);
     }
 
     private void popularDistritos() {
@@ -118,7 +102,7 @@ public class ControllerPantalla {
         while (iterator.hasNext()) {
             Map.Entry<String, Distrito> entry = iterator.next();
             Distrito current = entry.getValue();
-            listDistritos.add(new Row(current.getDescripcion(), "" + current.getAcumulador().getCantidad()));
+            listDistritos.add(new Row(current.getDescripcion(), "" + current.getAcumulador().getCantidad(), entry.getKey()));
             LOG.info("Distrito: {}, recibio: {}", current.getDescripcion(), current.getAcumulador().getCantidad());
         }
         listDistritos.sort((o1, o2) -> {
@@ -140,5 +124,75 @@ public class ControllerPantalla {
     @Autowired
     public void setGestor(Gestor gestor) {
         this.gestor = gestor;
+    }
+
+    public void rowDistritoSelected(MouseEvent mouseEvent) {
+        Node node = ((Node) mouseEvent.getTarget()).getParent();
+        TableRow row;
+        if(mouseEvent.getClickCount() == 2) {
+            if (node instanceof TableRow) {
+                row = (TableRow) node;
+            } else {
+                row = (TableRow) node.getParent();
+            }
+            Row rowItem = (Row) row.getItem();
+            distritoSeleccionado = pais.getRegiones().get(rowItem.getColumn3());
+            Map<String, Seccion> secciones = distritoSeleccionado.getChilds();
+
+            Utils.initTableViewSeccion("Seccion", listSecciones, tableVotosSeccion);
+            popularSecciones(secciones.entrySet().iterator());
+            SingleSelectionModel<Tab> selectionModel = tabResultados.getSelectionModel();
+            selectionModel.select(2);
+        }
+    }
+
+    private void popularSecciones(Iterator<Map.Entry<String, Seccion>> iterator) {
+        listSecciones.clear();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Seccion> entry = iterator.next();
+            Seccion current = entry.getValue();
+            listSecciones.add(new Row(current.getDescripcion(), "" + current.getAcumulador().getCantidad(), entry.getKey()));
+            LOG.info("Seccion: {}, recibio: {}", current.getDescripcion(), current.getAcumulador().getCantidad());
+        }
+        listSecciones.sort((o1, o2) -> {
+            Integer first = Integer.parseInt(o1.getColumn2());
+            Integer second = Integer.parseInt(o2.getColumn2());
+            return second.compareTo(first);
+        });
+    }
+
+    public void rowSeccionSelected(MouseEvent mouseEvent) {
+        Node node = ((Node) mouseEvent.getTarget()).getParent();
+        TableRow row;
+        if(mouseEvent.getClickCount() == 2) {
+            if (node instanceof TableRow) {
+                row = (TableRow) node;
+            } else {
+                row = (TableRow) node.getParent();
+            }
+            Row rowItem = (Row) row.getItem();
+            Seccion seccionSeleccionada = distritoSeleccionado.getChilds().get(rowItem.getColumn3());
+            Map<String, Circuito> secciones = seccionSeleccionada.getChilds();
+
+            Utils.initTableViewSeccion("Circuitos", listCircuitos, tableVotosCircuito);
+            popularCircuitos(secciones.entrySet().iterator());
+            SingleSelectionModel<Tab> selectionModel = tabResultados.getSelectionModel();
+            selectionModel.select(3);
+        }
+    }
+
+    private void popularCircuitos(Iterator<Map.Entry<String, Circuito>> iterator) {
+        listCircuitos.clear();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Circuito> entry = iterator.next();
+            Circuito current = entry.getValue();
+            listCircuitos.add(new Row(current.getDescripcion(), "" + current.getAcumulador().getCantidad(), entry.getKey()));
+            LOG.info("Seccion: {}, recibio: {}", current.getDescripcion(), current.getAcumulador().getCantidad());
+        }
+        listCircuitos.sort((o1, o2) -> {
+            Integer first = Integer.parseInt(o1.getColumn2());
+            Integer second = Integer.parseInt(o2.getColumn2());
+            return second.compareTo(first);
+        });
     }
 }
