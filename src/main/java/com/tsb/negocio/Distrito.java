@@ -5,7 +5,7 @@ import com.tsb.soporte.TSBHashtableDA;
 
 import java.util.Map;
 
-public class Distrito implements Votable{
+public class Distrito implements Votable {
     private Acumulador cantidadVotos;
     private String codigo;
     private String descripcion;
@@ -18,24 +18,20 @@ public class Distrito implements Votable{
         this.cantidadVotos = new Acumulador(0);
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
     public String getDescripcion() {
         return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public Map<String, Seccion> getChilds() {
         return secciones;
     }
 
-    public void setChilds(Map secciones) {
+    public void setChilds(Map<String, Seccion> secciones) {
         this.secciones = secciones;
-    }
-
-    public int getSize() {
-        return 0;
     }
 
     @Override

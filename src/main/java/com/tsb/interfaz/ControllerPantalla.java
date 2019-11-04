@@ -2,19 +2,17 @@ package com.tsb.interfaz;
 
 import com.tsb.gestores.Gestor;
 import com.tsb.negocio.*;
+import com.tsb.soporte.Row;
 import com.tsb.soporte.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.tsb.soporte.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,21 +24,21 @@ import java.util.Map;
 public class ControllerPantalla {
 
     private static final Logger LOG = LoggerFactory.getLogger(ControllerPantalla.class);
-
-    private Gestor gestor;
-
     public Button btnCargarAgrupaciones;
     public Button btnCargarRegiones;
     public Button btnCargarVotos;
     public Label lblPath;
     public Label lblAgrupaciones;
-    public Label lblRegiones;
     public TabPane tabResultados;
     public TableView<Row> tableVotosAgrupacion;
     public TableView<Row> tableVotosDistrito;
+    public Label lblMesas;
+    public Label lblDistritos;
+    public Label lblSecciones;
+    public Label lblCircuitos;
     public TableView<Row> tableVotosSeccion;
     public TableView<Row> tableVotosCircuito;
-
+    private Gestor gestor;
     private Pais pais = new Pais();
     private String path;
     private ObservableList<Row> listAgrupacion = FXCollections.observableArrayList();
@@ -63,7 +61,7 @@ public class ControllerPantalla {
 
         btnCargarAgrupaciones.setDisable(true);
         btnCargarRegiones.setDisable(false);
-        lblAgrupaciones.setText("" + pais.getAgrupacionesCargadas());
+        lblAgrupaciones.setText(lblAgrupaciones.getText() + pais.getAgrupacionesSize());
         Utils.initTableViewSeccion("Agrupacion", listAgrupacion, tableVotosAgrupacion);
         popularAgrupaciones();
     }
@@ -88,7 +86,9 @@ public class ControllerPantalla {
 
         gestor.cargarDescripcionRegiones(pais, path);
 
-        lblRegiones.setText("" + pais.getRegionesCargadas());
+        lblDistritos.setText(lblDistritos.getText() + pais.getDistritosSize());
+        lblSecciones.setText(lblSecciones.getText() + pais.getSeccionesSize());
+        lblCircuitos.setText(lblCircuitos.getText() + pais.getCircuitosSize());
         btnCargarRegiones.setDisable(true);
         btnCargarVotos.setDisable(false);
         //initTableViewDistrito();
@@ -114,7 +114,7 @@ public class ControllerPantalla {
 
     public void cargarVotos(ActionEvent actionEvent) {
         gestor.cargarResultados(pais, path);
-
+        lblMesas.setText(lblMesas.getText() + pais.getMesasSize());
         btnCargarVotos.setDisable(true);
         popularAgrupaciones();
         popularDistritos();
@@ -129,7 +129,7 @@ public class ControllerPantalla {
     public void rowDistritoSelected(MouseEvent mouseEvent) {
         Node node = ((Node) mouseEvent.getTarget()).getParent();
         TableRow row;
-        if(mouseEvent.getClickCount() == 2) {
+        if (mouseEvent.getClickCount() == 2) {
             if (node instanceof TableRow) {
                 row = (TableRow) node;
             } else {
@@ -164,7 +164,7 @@ public class ControllerPantalla {
     public void rowSeccionSelected(MouseEvent mouseEvent) {
         Node node = ((Node) mouseEvent.getTarget()).getParent();
         TableRow row;
-        if(mouseEvent.getClickCount() == 2) {
+        if (mouseEvent.getClickCount() == 2) {
             if (node instanceof TableRow) {
                 row = (TableRow) node;
             } else {

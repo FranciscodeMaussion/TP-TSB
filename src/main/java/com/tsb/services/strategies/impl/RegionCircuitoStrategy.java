@@ -3,9 +3,9 @@ package com.tsb.services.strategies.impl;
 import com.tsb.negocio.Circuito;
 import com.tsb.negocio.Distrito;
 import com.tsb.negocio.Seccion;
+import com.tsb.services.strategies.RegionStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.tsb.services.strategies.RegionStrategy;
 
 import java.util.Map;
 
@@ -13,8 +13,8 @@ import static com.tsb.constants.Constants.*;
 
 public class RegionCircuitoStrategy implements RegionStrategy {
 
-    private static RegionCircuitoStrategy instance;
     private static final Logger LOG = LoggerFactory.getLogger(RegionCircuitoStrategy.class);
+    private static RegionCircuitoStrategy instance;
 
 
     private RegionCircuitoStrategy() {
@@ -35,7 +35,7 @@ public class RegionCircuitoStrategy implements RegionStrategy {
         String circuitoCode = campos[CODIGO_REGION].substring(LENGTH_SECCION);
         LOG.debug("Distrito: " + distritoCode + " Seccion: " + seccionCode + " Circuito: " + circuitoCode);
 
-        Distrito distrito = (Distrito) table.get(distritoCode);
+        Distrito distrito = table.get(distritoCode);
         if (distrito == null) {
             LOG.error("Distrito default: " + distritoCode);
             distrito = new Distrito(distritoCode, DEFAULT_NAME);

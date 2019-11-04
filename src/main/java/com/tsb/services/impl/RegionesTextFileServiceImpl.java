@@ -1,6 +1,5 @@
 package com.tsb.services.impl;
 
-import com.tsb.negocio.Circuito;
 import com.tsb.negocio.Distrito;
 import com.tsb.negocio.Seccion;
 import com.tsb.services.RegionesTextFileService;
@@ -16,7 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 import static com.tsb.constants.Constants.*;
 
@@ -63,32 +65,32 @@ public class RegionesTextFileServiceImpl implements RegionesTextFileService {
         return table;
     }
 
-    //TODO necesitamos esto?
-    public void validate(int count, Map table) {
-        LOG.info("Lineas: {}", count);
+    @Override
+    public int[] countRegiones(Map<String, Distrito> table) {
+        int[] indexCounts = new int[3];
 
         Collection<Distrito> distritos = table.values();
-        Iterator<Distrito> iterator = distritos.iterator();
         int index = 0;
         int seccionesIndex = 0;
         int circuitosIndex = 0;
-        while (iterator.hasNext()) {
-            Distrito distrito = iterator.next();
+        for (Distrito distrito : distritos) {
             Collection<Seccion> secciones = distrito.getChilds().values();
-            Iterator<Seccion> seccionesIterator = secciones.iterator();
-            while (seccionesIterator.hasNext()) {
-                Seccion seccion = seccionesIterator.next();
-                Collection<Circuito> circuitos = seccion.getChilds().values();
-                Iterator<Circuito> circuitosIterator = circuitos.iterator();
-                while (circuitosIterator.hasNext()) {
-                    circuitosIndex++;
-                }
+            for (Seccion seccion : secciones) {
+                circuitosIndex += seccion.getChilds().size();
                 seccionesIndex++;
             }
             index++;
         }
+        indexCounts[0] = index;
+        indexCounts[1] = seccionesIndex;
+        indexCounts[2] = circuitosIndex;
+        return indexCounts;
+    }
 
-        LOG.info("Distritos: {}, Secciones: {}, Circuitos: {}, Total: {}", index, seccionesIndex, circuitosIndex, index + seccionesIndex + circuitosIndex);
-
+    //TODO necesitamos esto?
+    private void validate(int count, Map<String, Distrito> table) {
+        LOG.info("Lineas: {}", count);
+        int[] indexCounts = countRegiones(table);
+        LOG.info("Distritos: {}, Secciones: {}, Circuitos: {}, Total: {}", indexCounts[0], indexCounts[1], indexCounts[2], indexCounts[0] + indexCounts[1] + indexCounts[2]);
     }
 }

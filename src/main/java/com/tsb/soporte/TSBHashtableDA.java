@@ -22,24 +22,20 @@ public class TSBHashtableDA<K, V> implements Map<K, V>, Cloneable, Serializable 
     public static final int TOMBSTONE = 2;
 
     //************************ Atributos privados (estructurales).
-
+    // conteo de operaciones de cambio de tamaño (fail-fast iterator).
+    protected transient int modCount;
     // la tabla hash: el arreglo que contiene todos los objetos...
-    private Object table[];
-
+    private Object[] table;
     // el tamaño inicial de la tabla (tamaño con el que fue creada)...
     private int initial_capacity;
-
     private int capacity;
-
     // la cantidad de objetos que contiene la tabla...
     private int count;
 
-    // el factor de carga para calcular si hace falta un rehashing...
-    private float load_factor;
-
 
     //************************ Atributos privados (para gestionar las vistas).
-
+    // el factor de carga para calcular si hace falta un rehashing...
+    private float load_factor;
     /*
      * (Tal cual están definidos en la clase java.util.Hashtable)
      * Cada uno de estos campos se inicializa para contener una instancia de la
@@ -50,13 +46,10 @@ public class TSBHashtableDA<K, V> implements Map<K, V>, Cloneable, Serializable 
      */
     private transient Set<K> keySet = null;
     private transient Set<Map.Entry<K, V>> entrySet = null;
-    private transient Collection<V> values = null;
 
 
     //************************ Atributos protegidos (control de iteración).
-
-    // conteo de operaciones de cambio de tamaño (fail-fast iterator).
-    protected transient int modCount;
+    private transient Collection<V> values = null;
 
 
     //************************ Constructores.
@@ -214,7 +207,7 @@ public class TSBHashtableDA<K, V> implements Map<K, V>, Cloneable, Serializable 
         int ik = this.h(key);
 
         V old = null;
-        Map.Entry<K, V> x = this.search_for_entry((K) key, ik);
+        Map.Entry<K, V> x = this.search_for_entry(key, ik);
         if (x != null) {
             old = x.getValue();
             x.setValue(value);
@@ -502,7 +495,7 @@ public class TSBHashtableDA<K, V> implements Map<K, V>, Cloneable, Serializable 
         int new_length = nextPrime((int) (old_length * 1.5f));
         capacity = new_length;
         // crear el nuevo arreglo de tamaño new_length...
-        Object temp[] = new Object[new_length];
+        Object[] temp = new Object[new_length];
         for (int j = 0; j < temp.length; j++) {
             temp[j] = new Entry<>(null, null);
         }
@@ -635,7 +628,7 @@ public class TSBHashtableDA<K, V> implements Map<K, V>, Cloneable, Serializable 
      * Retorna el índice de la primera casilla abierta, a partir de la posición ik,
      * en la tabla t. Aplica exploración cuadrática.
      */
-    private int search_for_OPEN(Object t[], int ik) {
+    private int search_for_OPEN(Object[] t, int ik) {
         for (int j = 0; ; j++) {
             ik += (int) Math.pow(j, 2);
             ik %= t.length;
@@ -689,6 +682,12 @@ public class TSBHashtableDA<K, V> implements Map<K, V>, Cloneable, Serializable 
             return state;
         }
 
+        public void setState(int ns) {
+            if (ns >= 0 && ns < 3) {
+                state = ns;
+            }
+        }
+
         @Override
         public V setValue(V value) {
             if (value == null) {
@@ -698,12 +697,6 @@ public class TSBHashtableDA<K, V> implements Map<K, V>, Cloneable, Serializable 
             V old = this.value;
             this.value = value;
             return old;
-        }
-
-        public void setState(int ns) {
-            if (ns >= 0 && ns < 3) {
-                state = ns;
-            }
         }
 
         @Override
@@ -730,10 +723,7 @@ public class TSBHashtableDA<K, V> implements Map<K, V>, Cloneable, Serializable 
             if (!Objects.equals(this.key, other.key)) {
                 return false;
             }
-            if (!Objects.equals(this.value, other.value)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(this.value, other.value);
         }
 
         @Override

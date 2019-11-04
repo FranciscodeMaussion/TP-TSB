@@ -6,10 +6,10 @@ import com.tsb.negocio.Circuito;
 import com.tsb.negocio.Distrito;
 import com.tsb.negocio.Seccion;
 import com.tsb.services.MesasTextFileService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.tsb.soporte.Acumulador;
 import com.tsb.soporte.TSBHashtableDA;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -44,7 +44,7 @@ public class MesasTextFileServiceImpl implements MesasTextFileService {
                 // Suma por mesa
                 // TODO considerar crear mesa como un subobjeto de circuito
                 Acumulador mesa = mesasTable.get(campos[MESA]);
-                if(mesa == null){
+                if (mesa == null) {
                     mesa = new Acumulador(0);
                 }
                 mesa.sumar(votos);
@@ -53,7 +53,7 @@ public class MesasTextFileServiceImpl implements MesasTextFileService {
                 // Suma por agrupacion
                 // TODO considerar votable como generalizacion de estos elementos
                 Agrupacion agrupacion = postulaciones.get(campos[AGRUPACION_MESA]);
-                if(agrupacion == null){
+                if (agrupacion == null) {
                     agrupacion = new Agrupacion(campos[CATEGORIA_MESA], Integer.parseInt(campos[AGRUPACION_MESA]), DEFAULT_NAME);
                 }
                 agrupacion.getAcumulador().sumar(votos);
@@ -62,7 +62,7 @@ public class MesasTextFileServiceImpl implements MesasTextFileService {
                 // Suma por Distrito, Seccion, Circuito
                 String distritoCode = campos[CIRCUITO_MESA].substring(0, LENGTH_DISTRITO);
                 Distrito distrito = regiones.get(distritoCode);
-                if(distrito == null){
+                if (distrito == null) {
                     distrito = new Distrito(distritoCode, DEFAULT_NAME);
                 }
                 distrito.getAcumulador().sumar(votos);
@@ -70,7 +70,7 @@ public class MesasTextFileServiceImpl implements MesasTextFileService {
                 String seccionCode = campos[CIRCUITO_MESA].substring(LENGTH_DISTRITO, LENGTH_SECCION);
                 Map<String, Seccion> secciones = distrito.getChilds();
                 Seccion seccion = secciones.get(seccionCode);
-                if(seccion == null){
+                if (seccion == null) {
                     seccion = new Seccion(seccionCode, DEFAULT_NAME);
                 }
                 seccion.getAcumulador().sumar(votos);
@@ -78,7 +78,7 @@ public class MesasTextFileServiceImpl implements MesasTextFileService {
                 String circuitoCode = campos[CIRCUITO_MESA].substring(LENGTH_SECCION);
                 Map<String, Circuito> circuitos = seccion.getChilds();
                 Circuito circuito = circuitos.get(circuitoCode);
-                if(circuito == null){
+                if (circuito == null) {
                     circuito = new Circuito(circuitoCode, DEFAULT_NAME);
                 }
                 circuito.getAcumulador().sumar(votos);

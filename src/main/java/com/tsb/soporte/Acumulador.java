@@ -1,14 +1,14 @@
 package com.tsb.soporte;
 
 public class Acumulador {
-    public int getCantidad() {
-        return cantidad;
-    }
-
     private int cantidad;
 
     public Acumulador(int inicial) {
         this.cantidad = inicial;
+    }
+
+    public int getCantidad() {
+        return cantidad;
     }
 
     public void sumar(int valor) {

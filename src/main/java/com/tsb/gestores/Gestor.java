@@ -38,6 +38,7 @@ public class Gestor {
     public void cargarDescripcionRegiones(Pais pais, String path) {
         regiones = regionesTextFileService.getRegiones(path + Constants.FILE_REGIONES);
         pais.setRegiones(regiones);
+        pais.setRegionesCount(regionesTextFileService.countRegiones(regiones));
     }
 
     public void cargarResultados(Pais pais, String path) {

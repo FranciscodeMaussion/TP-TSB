@@ -5,7 +5,7 @@ import com.tsb.soporte.TSBHashtableDA;
 
 import java.util.Map;
 
-public class Seccion implements Votable{
+public class Seccion implements Votable {
     private Acumulador cantidadVotos;
     private String codigo;
     private String descripcion;
@@ -23,12 +23,8 @@ public class Seccion implements Votable{
         return circuitos;
     }
 
-    public void setChilds(Map circuitos) {
+    public void setChilds(Map<String, Circuito> circuitos) {
         this.circuitos = circuitos;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
     }
 
     public String getCodigo() {
@@ -37,6 +33,10 @@ public class Seccion implements Votable{
 
     public String getDescripcion() {
         return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public Map<String, Circuito> getCircuitos() {
@@ -56,4 +56,5 @@ public class Seccion implements Votable{
     public Acumulador getAcumulador() {
         return cantidadVotos;
     }
+
 }

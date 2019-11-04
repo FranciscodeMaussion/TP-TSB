@@ -1,18 +1,14 @@
 package com.tsb.soporte;
 
-import com.tsb.negocio.Seccion;
-import javafx.collections.FXCollections;
+import com.tsb.services.strategies.RegionStrategy;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.tsb.services.strategies.RegionStrategy;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class Utils {
 
@@ -28,7 +24,7 @@ public class Utils {
         return strategies.get(estrategiaElegida);
     }
 
-    public static void initTableViewSeccion(String nombre, ObservableList<Row> list, TableView<Row> table){
+    public static void initTableViewSeccion(String nombre, ObservableList<Row> list, TableView<Row> table) {
 
         table.setItems(list);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
