@@ -28,9 +28,10 @@ public class ControllerPantalla {
     public ChoiceBox selDistrito;
     public ChoiceBox selSeccion;
     public ChoiceBox selCircuito;
-    public ChoiceBox selMesa;
+    //public ChoiceBox selMesa;
     public Button btnFiltrar;
     public TableView tableAgrupaciones;
+    public TextField lblMesas;
 
     private Gestor gestor;
     private Pais pais = new Pais();
@@ -41,7 +42,11 @@ public class ControllerPantalla {
     private ObservableList<Row> listaDistrito = FXCollections.observableArrayList();
     private ObservableList<Row> listaSeccion = FXCollections.observableArrayList();
     private ObservableList<Row> listaCircuito = FXCollections.observableArrayList();
-    private ObservableList<Row> listaMesa = FXCollections.observableArrayList();
+    //private ObservableList<Row> listaMesa = FXCollections.observableArrayList();
+
+    private Distrito selectedDistrito;
+    private Seccion selectedSeccion;
+    private Circuito selectedCircuito;
 
     @Autowired
     public void setGestor(Gestor gestor) {
@@ -61,42 +66,96 @@ public class ControllerPantalla {
         btnCargarArchivos.setDisable(true);
 
         Utils.initTableViewSeccion("Agrupacion", listaAgrupacione, tableAgrupaciones);
+        selDistrito.setItems(listaDistrito);
+        selSeccion.setItems(listaSeccion);
+        selCircuito.setItems(listaCircuito);
+
         popularAgrupaciones();
         popularSelectorDistritos();
     }
 
     private void popularSelectorDistritos(){
+        selDistrito.setDisable(false);
         for (Map.Entry<String, Distrito> current : pais.getRegiones().entrySet()) {
             Row row = new Row(current.getValue().getDescripcion(), current.getKey(), "");
             listaDistrito.add(row);
         }
-        selDistrito.setItems(listaDistrito);
+    }
+
+    public void distritoSelected(ActionEvent event) {
+        Row row = (Row) selDistrito.getSelectionModel().getSelectedItem();
+        if (row == null){
+            return;
+        }
+        selectedDistrito = pais.getRegiones().get(row.getColumn2());
+        LOG.info("Distrito " + selectedDistrito + " selected");
+        clearSeccion();
+        clearCircuito();
+        selCircuito.setDisable(true);
+        lblMesas.setDisable(true);
+        popularSelectorSecciones(selectedDistrito);
     }
 
     private void popularSelectorSecciones(Distrito distrito){
+        selSeccion.setDisable(false);
         for (Map.Entry<String, Seccion> current : distrito.getSecciones().entrySet()) {
             Row row = new Row(current.getValue().getDescripcion(), current.getKey(), "");
             listaSeccion.add(row);
         }
-        selSeccion.setItems(listaSeccion);
+    }
+
+    public void seccionSelected(ActionEvent event) {
+        Row row = (Row) selSeccion.getSelectionModel().getSelectedItem();
+        if (row == null){
+            return;
+        }
+        selectedSeccion = selectedDistrito.getSecciones().get(row.getColumn2());
+        LOG.info("Seccion " + selectedSeccion + " selected");
+        clearCircuito();
+        lblMesas.setDisable(true);
+        popularSelectorCircuitos(selectedSeccion);
     }
 
     private void popularSelectorCircuitos(Seccion seccion){
+        selCircuito.setDisable(false);
         for (Map.Entry<String, Circuito> current : seccion.getCircuitos().entrySet()) {
             Row row = new Row(current.getValue().getDescripcion(), current.getKey(), "");
             listaCircuito.add(row);
         }
-        selCircuito.setItems(listaCircuito);
     }
 
-    private void popularSelectorDMesas(Circuito circuito){
+    public void circuitoSelected(ActionEvent event) {
+        Row row = (Row) selCircuito.getSelectionModel().getSelectedItem();
+        if (row == null){
+            return;
+        }
+        selectedCircuito = selectedSeccion.getCircuitos().get(row.getColumn2());
+        LOG.info("Seccion " + selectedCircuito + " selected");
+        lblMesas.setDisable(false);
+        //popularSelectorDMesas(Circuito);
+    }
+
+    /*private void popularSelectorDMesas(Circuito circuito){
+        selMesa.setDisable(false);
         for (Map.Entry<String, Mesa> current : circuito.getMesas().entrySet()) {
             Row row = new Row("", current.getKey(), "");
             listaMesa.add(row);
         }
         selMesa.setItems(listaMesa);
+    }*/
+
+
+    private void clearSeccion(){
+        selectedSeccion = null;
+        selSeccion.getSelectionModel().clearSelection();
+        selSeccion.getItems().clear();
     }
 
+    private void clearCircuito(){
+        selectedCircuito = null;
+        selCircuito.getSelectionModel().clearSelection();
+        selCircuito.getItems().clear();
+    }
 
     private void popularAgrupaciones() {
         listaAgrupacione.clear();

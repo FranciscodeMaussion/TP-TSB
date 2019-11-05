@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tsb.interfaz.ControllerPantalla">
+    <children>
+        <Button fx:id="btnCargarArchivos" layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#cargarArchivos" prefHeight="26.0" prefWidth="155.0" text="Cargar Archivos" />
+        <Label fx:id="lblPath" layoutX="187.0" layoutY="14.0" prefHeight="16.0" prefWidth="561.0" text="Ruta: " />
+      <Label layoutX="27.0" layoutY="238.0" text="Resultado" />
+      <TableView fx:id="tableAgrupaciones" layoutX="27.0" layoutY="270.0" prefHeight="292.0" prefWidth="547.0" />
+      <AnchorPane layoutX="56.0" layoutY="44.0" prefHeight="194.0" prefWidth="491.0">
+         <children>
+            <Label layoutX="15.0" layoutY="10.0" text="Distrito:" />
+            <ChoiceBox fx:id="selDistrito" disable="true" layoutX="15.0" layoutY="33.0" onAction="#distritoSelected" prefWidth="150.0" />
+            <Label layoutX="263.0" layoutY="10.0" text="Seccion:" />
+            <ChoiceBox fx:id="selSeccion" disable="true" layoutX="263.0" layoutY="33.0" onAction="#seccionSelected" prefWidth="150.0" />
+            <Label layoutX="16.0" layoutY="89.0" text="Circuito" />
+            <ChoiceBox fx:id="selCircuito" disable="true" layoutX="15.0" layoutY="109.0" onAction="#circuitoSelected" prefWidth="150.0" />
+            <Label layoutX="263.0" layoutY="89.0" text="Mesa" />
+            <TextField fx:id="lblMesas" disable="true" layoutX="263.0" layoutY="109.0" prefHeight="26.0" prefWidth="150.0" />
+            <Button fx:id="btnFiltrar" disable="true" layoutX="244.0" layoutY="154.0" mnemonicParsing="false" text="Aplicar Filtros" />
+            <Button disable="true" layoutX="110.0" layoutY="154.0" mnemonicParsing="false" text="Limpiar Filtros" />
+         </children>
+      </AnchorPane>
+
+    </children>
+</AnchorPane>
