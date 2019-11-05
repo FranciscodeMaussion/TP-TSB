@@ -8,11 +8,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.util.Iterator;
@@ -23,15 +25,23 @@ public class ControllerPantalla {
 
     private static final Logger LOG = LoggerFactory.getLogger(ControllerPantalla.class);
 
+    private static final String MESSAGE_CARGANDO = "Cargando...";
+    private static final String MESSAGE_CARGAR = "Cargar Archivos";
+
+    private static final String MESSAGE_AGRUPACION = "Agrupacion";
+
+    private static final String TODOS = "Todos";
+
     public Button btnCargarArchivos;
     public Label lblPath;
     public ChoiceBox selDistrito;
     public ChoiceBox selSeccion;
     public ChoiceBox selCircuito;
-    //public ChoiceBox selMesa;
+    public TextField txtMesas;
     public Button btnFiltrar;
     public TableView tableAgrupaciones;
-    public TextField lblMesas;
+    public Button btnLimpiar;
+    public Label lblMesa;
 
     private Gestor gestor;
     private Pais pais = new Pais();
@@ -48,6 +58,7 @@ public class ControllerPantalla {
     private Seccion selectedSeccion;
     private Circuito selectedCircuito;
 
+
     @Autowired
     public void setGestor(Gestor gestor) {
         this.gestor = gestor;
@@ -55,6 +66,7 @@ public class ControllerPantalla {
 
     public void cargarArchivos(ActionEvent actionEvent) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
+        btnCargarArchivos.setText(MESSAGE_CARGANDO);
         File file = directoryChooser.showDialog(null);
         if (file != null) {
             path = file.getPath();
@@ -63,41 +75,59 @@ public class ControllerPantalla {
         gestor.cargarDescripcionPostulaciones(pais, path);
         gestor.cargarDescripcionRegiones(pais, path);
         gestor.cargarResultados(pais, path);
-        btnCargarArchivos.setDisable(true);
+        btnCargarArchivos.setText(MESSAGE_CARGAR);
 
-        Utils.initTableViewSeccion("Agrupacion", listaAgrupacione, tableAgrupaciones);
+        Utils.initTableViewSeccion(MESSAGE_AGRUPACION, listaAgrupacione, tableAgrupaciones);
+
         selDistrito.setItems(listaDistrito);
         selSeccion.setItems(listaSeccion);
         selCircuito.setItems(listaCircuito);
 
+        initListas();
         popularAgrupaciones();
         popularSelectorDistritos();
+
+        mostrarCamposBusqueda();
+    }
+
+    private void mostrarCamposBusqueda(){
+        selDistrito.setDisable(false);
+        selSeccion.setDisable(false);
+        selCircuito.setDisable(false);
+
+        btnFiltrar.setDisable(false);
+        btnLimpiar.setDisable(false);
+    }
+
+    private void initListas(){
+        clearDistrito();
+        clearSeccion();
+        clearCircuito();
     }
 
     private void popularSelectorDistritos(){
-        selDistrito.setDisable(false);
         for (Map.Entry<String, Distrito> current : pais.getRegiones().entrySet()) {
             Row row = new Row(current.getValue().getDescripcion(), current.getKey(), "");
             listaDistrito.add(row);
         }
+        selDistrito.getSelectionModel().select(0);
     }
 
     public void distritoSelected(ActionEvent event) {
         Row row = (Row) selDistrito.getSelectionModel().getSelectedItem();
-        if (row == null){
+        if (row == null || row.getColumn1().equals(TODOS)){
+            clearSeccion();
+            clearCircuito();
             return;
         }
         selectedDistrito = pais.getRegiones().get(row.getColumn2());
-        LOG.info("Distrito " + selectedDistrito + " selected");
+        LOG.info("Distrito {} selected", selectedDistrito);
         clearSeccion();
         clearCircuito();
-        selCircuito.setDisable(true);
-        lblMesas.setDisable(true);
         popularSelectorSecciones(selectedDistrito);
     }
 
     private void popularSelectorSecciones(Distrito distrito){
-        selSeccion.setDisable(false);
         for (Map.Entry<String, Seccion> current : distrito.getSecciones().entrySet()) {
             Row row = new Row(current.getValue().getDescripcion(), current.getKey(), "");
             listaSeccion.add(row);
@@ -106,18 +136,18 @@ public class ControllerPantalla {
 
     public void seccionSelected(ActionEvent event) {
         Row row = (Row) selSeccion.getSelectionModel().getSelectedItem();
-        if (row == null){
+        if (row == null || row.getColumn1().equals(TODOS)){
+            clearCircuito();
             return;
         }
         selectedSeccion = selectedDistrito.getSecciones().get(row.getColumn2());
-        LOG.info("Seccion " + selectedSeccion + " selected");
+        LOG.info("Seccion {} selected", selectedSeccion);
         clearCircuito();
-        lblMesas.setDisable(true);
+
         popularSelectorCircuitos(selectedSeccion);
     }
 
     private void popularSelectorCircuitos(Seccion seccion){
-        selCircuito.setDisable(false);
         for (Map.Entry<String, Circuito> current : seccion.getCircuitos().entrySet()) {
             Row row = new Row(current.getValue().getDescripcion(), current.getKey(), "");
             listaCircuito.add(row);
@@ -126,35 +156,41 @@ public class ControllerPantalla {
 
     public void circuitoSelected(ActionEvent event) {
         Row row = (Row) selCircuito.getSelectionModel().getSelectedItem();
-        if (row == null){
+        if (row == null || row.getColumn1().equals(TODOS)){
+            txtMesas.setText("");
+            txtMesas.setDisable(true);
+            txtMesas.setStyle("-fx-text-inner-color: black;");
+            lblMesa.setTextFill(Color.BLACK);
             return;
         }
         selectedCircuito = selectedSeccion.getCircuitos().get(row.getColumn2());
-        LOG.info("Seccion " + selectedCircuito + " selected");
-        lblMesas.setDisable(false);
-        //popularSelectorDMesas(Circuito);
+        txtMesas.setDisable(false);
+        LOG.info("Seccion {} selected", selectedCircuito);
+
     }
 
-    /*private void popularSelectorDMesas(Circuito circuito){
-        selMesa.setDisable(false);
-        for (Map.Entry<String, Mesa> current : circuito.getMesas().entrySet()) {
-            Row row = new Row("", current.getKey(), "");
-            listaMesa.add(row);
-        }
-        selMesa.setItems(listaMesa);
-    }*/
-
+    private void clearDistrito(){
+        selectedDistrito = null;
+        selDistrito.getSelectionModel().clearSelection();
+        selDistrito.getItems().clear();
+        listaDistrito.add(0, new Row(TODOS, null, null));
+        selDistrito.getSelectionModel().select(0);
+    }
 
     private void clearSeccion(){
         selectedSeccion = null;
         selSeccion.getSelectionModel().clearSelection();
         selSeccion.getItems().clear();
+        listaSeccion.add(0, new Row(TODOS, null, null));
+        selSeccion.getSelectionModel().select(0);
     }
 
     private void clearCircuito(){
         selectedCircuito = null;
         selCircuito.getSelectionModel().clearSelection();
         selCircuito.getItems().clear();
+        listaCircuito.add(0, new Row(TODOS, null, null));
+        selCircuito.getSelectionModel().select(0);
     }
 
     private void popularAgrupaciones() {
@@ -175,4 +211,46 @@ public class ControllerPantalla {
     }
 
 
+    public void filtrar(ActionEvent actionEvent) {
+        Row rowDistrito = (Row) selDistrito.getSelectionModel().getSelectedItem();
+        Row rowSeccion = (Row) selSeccion.getSelectionModel().getSelectedItem();
+        Row rowCircuito = (Row) selCircuito.getSelectionModel().getSelectedItem();
+        Votable selected = null;
+        if (rowDistrito.getColumn1().equals(TODOS)){
+            popularAgrupaciones();
+        } else if (rowSeccion.getColumn1().equals(TODOS)) {
+            selected = selectedDistrito;
+        } else if (rowCircuito.getColumn1().equals(TODOS)) {
+            selected = selectedSeccion;
+        } else {
+            selected = selectedCircuito;
+        }
+
+
+        String idMesa = txtMesas.getText();
+        if(StringUtils.hasText(idMesa)){
+            Map<String, Mesa> mesas = selectedCircuito.getMesas();
+            selected = mesas.get(idMesa);
+        }
+
+
+        if(selected == null){
+            txtMesas.setStyle("-fx-text-inner-color: red;");
+            lblMesa.setTextFill(Color.RED);
+            return;
+        }
+        txtMesas.setStyle("-fx-text-inner-color: black;");
+        lblMesa.setTextFill(Color.BLACK);
+
+        for (Row row: listaAgrupacione ) {
+            int votosAgrupacion = selected.getVotosAgrupacion(row.getColumn3());
+            row.setColumn2("" + votosAgrupacion);
+        }
+        tableAgrupaciones.refresh();
+    }
+
+    public void limpiar(ActionEvent actionEvent) {
+        selDistrito.getSelectionModel().select(0);
+        popularAgrupaciones();
+    }
 }
