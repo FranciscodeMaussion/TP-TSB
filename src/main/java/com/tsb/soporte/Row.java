@@ -1,5 +1,7 @@
 package com.tsb.soporte;
 
+import org.springframework.util.StringUtils;
+
 public class Row {
     private String column1;
     private String column2;
@@ -33,5 +35,17 @@ public class Row {
 
     public void setColumn3(String column3) {
         this.column3 = column3;
+    }
+
+    @Override
+    public String toString() {
+        String result = column1;
+        if(StringUtils.hasText(column2)){
+            result += ", " + column2;
+        }
+        if(StringUtils.hasText(column3)){
+            result += ", " + column3;
+        }
+        return result;
     }
 }

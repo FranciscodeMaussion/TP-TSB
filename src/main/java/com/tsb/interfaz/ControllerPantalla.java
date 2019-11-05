@@ -7,9 +7,7 @@ import com.tsb.soporte.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,36 +22,31 @@ import java.util.Map;
 public class ControllerPantalla {
 
     private static final Logger LOG = LoggerFactory.getLogger(ControllerPantalla.class);
-    public Button btnCargarAgrupaciones;
-    public Button btnCargarRegiones;
-    public Button btnCargarVotos;
+
     public Button btnCargarArchivos;
     public Label lblPath;
-    public Label lblAgrupaciones;
-    public TabPane tabResultados;
-    public TableView<Row> tableVotosAgrupacion;
-    public TableView<Row> tableVotosDistrito;
-    public Label lblMesas;
-    public Label lblDistritos;
-    public Label lblSecciones;
-    public Label lblCircuitos;
-    public TableView<Row> tableVotosSeccion;
-    public TableView<Row> tableVotosCircuito;
-    public Label lblTextHint;
-    public Tab tbAgrupaciones;
-    public Tab tbDistritos;
-    public Tab tbSecciones;
-    public Tab tbCircuitos;
+    public ChoiceBox selDistrito;
+    public ChoiceBox selSeccion;
+    public ChoiceBox selCircuito;
+    public ChoiceBox selMesa;
+    public Button btnFiltrar;
+    public TableView tableAgrupaciones;
+
     private Gestor gestor;
     private Pais pais = new Pais();
     private String path;
-    private ObservableList<Row> listAgrupacion = FXCollections.observableArrayList();
-    private ObservableList<Row> listDistritos = FXCollections.observableArrayList();
-    private ObservableList<Row> listSecciones = FXCollections.observableArrayList();
-    private ObservableList<Row> listCircuitos = FXCollections.observableArrayList();
 
-    private Distrito distritoSeleccionado;
-    private Seccion seccionSeleccionada;
+    private ObservableList<Row> listaAgrupacione = FXCollections.observableArrayList();
+
+    private ObservableList<Row> listaDistrito = FXCollections.observableArrayList();
+    private ObservableList<Row> listaSeccion = FXCollections.observableArrayList();
+    private ObservableList<Row> listaCircuito = FXCollections.observableArrayList();
+    private ObservableList<Row> listaMesa = FXCollections.observableArrayList();
+
+    @Autowired
+    public void setGestor(Gestor gestor) {
+        this.gestor = gestor;
+    }
 
     public void cargarArchivos(ActionEvent actionEvent) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -62,185 +55,64 @@ public class ControllerPantalla {
             path = file.getPath();
             lblPath.setText(path);
         }
-        btnCargarArchivos.setDisable(true);
-        btnCargarAgrupaciones.setDisable(false);
-    }
-
-    public void cargarAgrupaciones(ActionEvent actionEvent) {
         gestor.cargarDescripcionPostulaciones(pais, path);
-        lblTextHint.setVisible(false);
+        gestor.cargarDescripcionRegiones(pais, path);
+        gestor.cargarResultados(pais, path);
+        btnCargarArchivos.setDisable(true);
 
-        btnCargarAgrupaciones.setDisable(true);
-        tbAgrupaciones.setDisable(false);
-        btnCargarRegiones.setDisable(false);
-        lblAgrupaciones.setText(lblAgrupaciones.getText() + pais.getAgrupacionesSize());
-        Utils.initTableViewSeccion("Agrupacion", listAgrupacion, tableVotosAgrupacion);
+        Utils.initTableViewSeccion("Agrupacion", listaAgrupacione, tableAgrupaciones);
         popularAgrupaciones();
+        popularSelectorDistritos();
     }
+
+    private void popularSelectorDistritos(){
+        for (Map.Entry<String, Distrito> current : pais.getRegiones().entrySet()) {
+            Row row = new Row(current.getValue().getDescripcion(), current.getKey(), "");
+            listaDistrito.add(row);
+        }
+        selDistrito.setItems(listaDistrito);
+    }
+
+    private void popularSelectorSecciones(Distrito distrito){
+        for (Map.Entry<String, Seccion> current : distrito.getSecciones().entrySet()) {
+            Row row = new Row(current.getValue().getDescripcion(), current.getKey(), "");
+            listaSeccion.add(row);
+        }
+        selSeccion.setItems(listaSeccion);
+    }
+
+    private void popularSelectorCircuitos(Seccion seccion){
+        for (Map.Entry<String, Circuito> current : seccion.getCircuitos().entrySet()) {
+            Row row = new Row(current.getValue().getDescripcion(), current.getKey(), "");
+            listaCircuito.add(row);
+        }
+        selCircuito.setItems(listaCircuito);
+    }
+
+    private void popularSelectorDMesas(Circuito circuito){
+        for (Map.Entry<String, Mesa> current : circuito.getMesas().entrySet()) {
+            Row row = new Row("", current.getKey(), "");
+            listaMesa.add(row);
+        }
+        selMesa.setItems(listaMesa);
+    }
+
 
     private void popularAgrupaciones() {
-        listAgrupacion.clear();
+        listaAgrupacione.clear();
         Iterator<Map.Entry<String, Agrupacion>> iterator = pais.mostrarResultadosXAgrupacion();
         while (iterator.hasNext()) {
             Map.Entry<String, Agrupacion> entry = iterator.next();
             Agrupacion current = entry.getValue();
-            listAgrupacion.add(new Row(current.getNombreAgrupacion(), "" + current.getVotos(), entry.getKey()));
+            listaAgrupacione.add(new Row(current.getNombreAgrupacion(), "" + current.getVotos(), entry.getKey()));
             LOG.info("Agrupacion: {}, recibio: {}", current.getNombreAgrupacion(), current.getVotos());
         }
-        listAgrupacion.sort((o1, o2) -> {
+        listaAgrupacione.sort((o1, o2) -> {
             // TODO Consider to ask for order row
             Integer first = Integer.parseInt(o1.getColumn2());
             Integer second = Integer.parseInt(o2.getColumn2());
             return second.compareTo(first);
         });
-    }
-
-    public void cargarRegiones(ActionEvent actionEvent) {
-
-        gestor.cargarDescripcionRegiones(pais, path);
-
-        lblDistritos.setText(lblDistritos.getText() + pais.getDistritosSize());
-        lblSecciones.setText(lblSecciones.getText() + pais.getSeccionesSize());
-        lblCircuitos.setText(lblCircuitos.getText() + pais.getCircuitosSize());
-        btnCargarRegiones.setDisable(true);
-        //tbDistritos.setDisable(false);
-        btnCargarVotos.setDisable(false);
-        //initTableViewDistrito();
-        Utils.initTableViewSeccion("Distrito", listDistritos, tableVotosDistrito);
-        //popularDistritos();
-    }
-
-    public void rowAgrupacionSelected(MouseEvent mouseEvent) {
-        Node node = ((Node) mouseEvent.getTarget()).getParent();
-        TableRow row;
-        if (mouseEvent.getClickCount() == 2) {
-            if (node instanceof TableRow) {
-                row = (TableRow) node;
-            } else {
-                row = (TableRow) node.getParent();
-            }
-            Row rowItem = (Row) row.getItem();
-            tbDistritos.setDisable(false);
-
-            Utils.initTableViewSeccion("Distrito", listDistritos, tableVotosDistrito);
-            popularDistritos(rowItem.getColumn3());
-            SingleSelectionModel<Tab> selectionModel = tabResultados.getSelectionModel();
-            selectionModel.select(1);
-        }
-    }
-
-    private void popularDistritos(String agrupacionSeleccionada) {
-        listDistritos.clear();
-        Iterator<Map.Entry<String, Distrito>> iterator = pais.mostrarResultadosXDistrito();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Distrito> entry = iterator.next();
-            Distrito current = entry.getValue();
-            listDistritos.add(new Row(current.getDescripcion(), "" + current.getVotosAgrupacion(agrupacionSeleccionada), entry.getKey()));
-            LOG.info("Distrito: {}, recibio: {}", current.getDescripcion(), current.getVotosAgrupacion(agrupacionSeleccionada));
-        }
-        listDistritos.sort((o1, o2) -> {
-            Integer first = Integer.parseInt(o1.getColumn2());
-            Integer second = Integer.parseInt(o2.getColumn2());
-            return second.compareTo(first);
-        });
-    }
-
-    public void cargarVotos(ActionEvent actionEvent) {
-        gestor.cargarResultados(pais, path);
-        lblMesas.setText(lblMesas.getText() + pais.getMesasSize());
-        btnCargarVotos.setDisable(true);
-        popularAgrupaciones();
-    }
-
-    @Autowired
-    public void setGestor(Gestor gestor) {
-        this.gestor = gestor;
-    }
-
-    public void rowDistritoSelected(MouseEvent mouseEvent) {
-/*        Node node = ((Node) mouseEvent.getTarget()).getParent();
-        TableRow row;
-        if (mouseEvent.getClickCount() == 2) {
-            if (node instanceof TableRow) {
-                row = (TableRow) node;
-            } else {
-                row = (TableRow) node.getParent();
-            }
-            Row rowItem = (Row) row.getItem();
-            distritoSeleccionado = pais.getRegiones().get(rowItem.getColumn3());
-            Map<String, Seccion> secciones = distritoSeleccionado.getSecciones();
-            tbSecciones.setDisable(false);
-
-            Utils.initTableViewSeccion("Seccion", listSecciones, tableVotosSeccion);
-            popularSecciones(secciones.entrySet().iterator());
-            SingleSelectionModel<Tab> selectionModel = tabResultados.getSelectionModel();
-            selectionModel.select(2);
-        }*/
-    }
-
-    private void popularSecciones(Iterator<Map.Entry<String, Seccion>> iterator) {
-/*        listSecciones.clear();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Seccion> entry = iterator.next();
-            Seccion current = entry.getValue();
-            listSecciones.add(new Row(current.getDescripcion(), "" + current.getVotos(), entry.getKey()));
-            LOG.info("Seccion: {}, recibio: {}", current.getDescripcion(), current.getVotos());
-        }
-        listSecciones.sort((o1, o2) -> {
-            Integer first = Integer.parseInt(o1.getColumn2());
-            Integer second = Integer.parseInt(o2.getColumn2());
-            return second.compareTo(first);
-        });*/
-    }
-
-    public void rowSeccionSelected(MouseEvent mouseEvent) {
-/*        Node node = ((Node) mouseEvent.getTarget()).getParent();
-        TableRow row;
-        if (mouseEvent.getClickCount() == 2) {
-            if (node instanceof TableRow) {
-                row = (TableRow) node;
-            } else {
-                row = (TableRow) node.getParent();
-            }
-            Row rowItem = (Row) row.getItem();
-            Seccion seccionSeleccionada = distritoSeleccionado.getSecciones().get(rowItem.getColumn3());
-            Map<String, Circuito> secciones = seccionSeleccionada.getCircuitos();
-            tbCircuitos.setDisable(false);
-
-            Utils.initTableViewSeccion("Circuitos", listCircuitos, tableVotosCircuito);
-            popularCircuitos(secciones.entrySet().iterator());
-            SingleSelectionModel<Tab> selectionModel = tabResultados.getSelectionModel();
-            selectionModel.select(3);
-        }*/
-    }
-
-    private void popularCircuitos(Iterator<Map.Entry<String, Circuito>> iterator) {
-/*        listCircuitos.clear();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Circuito> entry = iterator.next();
-            Circuito current = entry.getValue();
-            listCircuitos.add(new Row(current.getDescripcion(), "" + current.getVotos(), entry.getKey()));
-            LOG.info("Seccion: {}, recibio: {}", current.getDescripcion(), current.getVotos());
-        }
-        listCircuitos.sort((o1, o2) -> {
-            Integer first = Integer.parseInt(o1.getColumn2());
-            Integer second = Integer.parseInt(o2.getColumn2());
-            return second.compareTo(first);
-        });*/
-    }
-
-    public void tabAgrupacionSelected() {
-        try {
-            lblTextHint.setVisible(false);
-        } catch (Exception ignored) {
-        }
-    }
-
-    public void tabRegionSelected() {
-        try {
-            lblTextHint.setVisible(true);
-        } catch (Exception ignored) {
-        }
     }
 
 

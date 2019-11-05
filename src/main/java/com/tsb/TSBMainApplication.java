@@ -29,7 +29,7 @@ public class TSBMainApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Elecciones 2019");
-        primaryStage.setScene(new Scene(rootNode, 800, 600));
+        primaryStage.setScene(new Scene(rootNode, 600, 600));
         primaryStage.show();
     }
 

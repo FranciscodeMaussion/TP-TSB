@@ -25,7 +25,6 @@ public class Utils {
     }
 
     public static void initTableViewSeccion(String nombre, ObservableList<Row> list, TableView<Row> table) {
-
         table.setItems(list);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         TableColumn<Row, String> nameColumn = new TableColumn<>(nombre);
