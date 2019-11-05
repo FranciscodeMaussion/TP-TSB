@@ -41,14 +41,14 @@ public class RegionCircuitoStrategy implements RegionStrategy {
             distrito = new Distrito(distritoCode, DEFAULT_NAME);
         }
 
-        Map distritoTable = distrito.getChilds();
+        Map distritoTable = distrito.getSecciones();
         seccion = (Seccion) distritoTable.get(seccionCode);
         if (seccion == null) {
             LOG.error("Seccion default: " + seccionCode);
             seccion = new Seccion(seccionCode, DEFAULT_NAME);
         }
 
-        Map seccionTable = seccion.getChilds();
+        Map seccionTable = seccion.getCircuitos();
         Circuito circuito = new Circuito(circuitoCode, campos[NOMBRE_REGION]);
 
         seccionTable.put(circuitoCode, circuito);

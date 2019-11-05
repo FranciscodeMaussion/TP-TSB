@@ -1,13 +1,8 @@
 package com.tsb.services.impl;
 
 import com.tsb.constants.Constants;
-import com.tsb.negocio.Agrupacion;
-import com.tsb.negocio.Circuito;
-import com.tsb.negocio.Distrito;
-import com.tsb.negocio.Seccion;
+import com.tsb.negocio.*;
 import com.tsb.services.MesasTextFileService;
-import com.tsb.soporte.Acumulador;
-import com.tsb.soporte.TSBHashtableDA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,15 +18,14 @@ import static com.tsb.constants.Constants.*;
 public class MesasTextFileServiceImpl implements MesasTextFileService {
     private static final Logger LOG = LoggerFactory.getLogger(MesasTextFileServiceImpl.class);
 
-    public Map<String, Acumulador> sumarVotos(String path, Map<String, Distrito> regiones, Map<String, Agrupacion> postulaciones) {
-        Map<String, Acumulador> mesasTable = new TSBHashtableDA<>();
-
+    public int sumarVotos(String path, Map<String, Distrito> regiones, Map<String, Agrupacion> postulaciones) {
+        int mesasCount = 0;
         Scanner fileReader;
         try {
             fileReader = new Scanner(new File(path));
         } catch (FileNotFoundException e) {
             LOG.error("Error loading file", e);
-            return null;
+            return 0;
         }
         while (fileReader.hasNextLine()) {
             String line = fileReader.nextLine();
@@ -41,17 +35,7 @@ public class MesasTextFileServiceImpl implements MesasTextFileService {
             if (campos[CATEGORIA_MESA].compareTo(PRESIDENTE) == 0) { // valida si es presidente
                 int votos = Integer.parseInt(campos[VOTOS_MESA]);
 
-                // Suma por mesa
-                // TODO considerar crear mesa como un subobjeto de circuito
-                Acumulador mesa = mesasTable.get(campos[MESA]);
-                if (mesa == null) {
-                    mesa = new Acumulador(0);
-                }
-                mesa.sumar(votos);
-                mesasTable.put(campos[MESA], mesa);
-
                 // Suma por agrupacion
-                // TODO considerar votable como generalizacion de estos elementos
                 Agrupacion agrupacion = postulaciones.get(campos[AGRUPACION_MESA]);
                 if (agrupacion == null) {
                     agrupacion = new Agrupacion(campos[CATEGORIA_MESA], Integer.parseInt(campos[AGRUPACION_MESA]), DEFAULT_NAME);
@@ -65,24 +49,34 @@ public class MesasTextFileServiceImpl implements MesasTextFileService {
                 if (distrito == null) {
                     distrito = new Distrito(distritoCode, DEFAULT_NAME);
                 }
-                distrito.sumarVotos(votos);
+                distrito.sumarVotosAgrupacion(votos, campos[AGRUPACION_MESA]);
 
                 String seccionCode = campos[CIRCUITO_MESA].substring(LENGTH_DISTRITO, LENGTH_SECCION);
-                Map<String, Seccion> secciones = distrito.getChilds();
+                Map<String, Seccion> secciones = distrito.getSecciones();
                 Seccion seccion = secciones.get(seccionCode);
                 if (seccion == null) {
                     seccion = new Seccion(seccionCode, DEFAULT_NAME);
                 }
-                seccion.sumarVotos(votos);
+                seccion.sumarVotosAgrupacion(votos, campos[AGRUPACION_MESA]);
 
                 String circuitoCode = campos[CIRCUITO_MESA].substring(LENGTH_SECCION);
-                Map<String, Circuito> circuitos = seccion.getChilds();
+                Map<String, Circuito> circuitos = seccion.getCircuitos();
                 Circuito circuito = circuitos.get(circuitoCode);
                 if (circuito == null) {
                     circuito = new Circuito(circuitoCode, DEFAULT_NAME);
                 }
-                circuito.sumarVotos(votos);
+                circuito.sumarVotosAgrupacion(votos, campos[AGRUPACION_MESA]);
 
+                // Suma por mesa
+                Map<String, Mesa> mesasTable = circuito.getMesas();
+                Mesa mesa = mesasTable.get(campos[MESA]);
+                if (mesa == null) {
+                    mesa = new Mesa(campos[MESA]);
+                }
+                mesa.sumarVotosAgrupacion(votos, campos[AGRUPACION_MESA]);
+                mesasCount++;
+
+                mesasTable.put(campos[MESA], mesa);
                 circuitos.put(circuitoCode, circuito);
                 secciones.put(seccionCode, seccion);
                 regiones.put(distritoCode, distrito);
@@ -90,9 +84,9 @@ public class MesasTextFileServiceImpl implements MesasTextFileService {
                 LOG.debug("Votos: {}", votos);
             }
         }
-        LOG.info("Mesas: {}", mesasTable);
         LOG.info("Postulaciones: {}", postulaciones);
         LOG.info("Distritos: {}", regiones);
-        return mesasTable;
+        return mesasCount;
     }
+
 }

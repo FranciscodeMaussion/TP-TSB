@@ -37,7 +37,7 @@ public class RegionSeccionStrategy implements RegionStrategy {
             LOG.error("Distrito default: " + distritoCode);
             distrito = new Distrito(distritoCode, DEFAULT_NAME);
         }
-        Map distritoTable = distrito.getChilds();
+        Map distritoTable = distrito.getSecciones();
 
         Seccion seccion = (Seccion) distritoTable.get(seccionCode);
         if (seccion == null) {

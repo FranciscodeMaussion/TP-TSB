@@ -103,21 +103,40 @@ public class ControllerPantalla {
         lblSecciones.setText(lblSecciones.getText() + pais.getSeccionesSize());
         lblCircuitos.setText(lblCircuitos.getText() + pais.getCircuitosSize());
         btnCargarRegiones.setDisable(true);
-        tbDistritos.setDisable(false);
+        //tbDistritos.setDisable(false);
         btnCargarVotos.setDisable(false);
         //initTableViewDistrito();
         Utils.initTableViewSeccion("Distrito", listDistritos, tableVotosDistrito);
-        popularDistritos();
+        //popularDistritos();
     }
 
-    private void popularDistritos() {
+    public void rowAgrupacionSelected(MouseEvent mouseEvent) {
+        Node node = ((Node) mouseEvent.getTarget()).getParent();
+        TableRow row;
+        if (mouseEvent.getClickCount() == 2) {
+            if (node instanceof TableRow) {
+                row = (TableRow) node;
+            } else {
+                row = (TableRow) node.getParent();
+            }
+            Row rowItem = (Row) row.getItem();
+            tbDistritos.setDisable(false);
+
+            Utils.initTableViewSeccion("Distrito", listDistritos, tableVotosDistrito);
+            popularDistritos(rowItem.getColumn3());
+            SingleSelectionModel<Tab> selectionModel = tabResultados.getSelectionModel();
+            selectionModel.select(1);
+        }
+    }
+
+    private void popularDistritos(String agrupacionSeleccionada) {
         listDistritos.clear();
         Iterator<Map.Entry<String, Distrito>> iterator = pais.mostrarResultadosXDistrito();
         while (iterator.hasNext()) {
             Map.Entry<String, Distrito> entry = iterator.next();
             Distrito current = entry.getValue();
-            listDistritos.add(new Row(current.getDescripcion(), "" + current.getVotos(), entry.getKey()));
-            LOG.info("Distrito: {}, recibio: {}", current.getDescripcion(), current.getVotos());
+            listDistritos.add(new Row(current.getDescripcion(), "" + current.getVotosAgrupacion(agrupacionSeleccionada), entry.getKey()));
+            LOG.info("Distrito: {}, recibio: {}", current.getDescripcion(), current.getVotosAgrupacion(agrupacionSeleccionada));
         }
         listDistritos.sort((o1, o2) -> {
             Integer first = Integer.parseInt(o1.getColumn2());
@@ -131,8 +150,6 @@ public class ControllerPantalla {
         lblMesas.setText(lblMesas.getText() + pais.getMesasSize());
         btnCargarVotos.setDisable(true);
         popularAgrupaciones();
-        popularDistritos();
-
     }
 
     @Autowired
@@ -141,7 +158,7 @@ public class ControllerPantalla {
     }
 
     public void rowDistritoSelected(MouseEvent mouseEvent) {
-        Node node = ((Node) mouseEvent.getTarget()).getParent();
+/*        Node node = ((Node) mouseEvent.getTarget()).getParent();
         TableRow row;
         if (mouseEvent.getClickCount() == 2) {
             if (node instanceof TableRow) {
@@ -151,18 +168,18 @@ public class ControllerPantalla {
             }
             Row rowItem = (Row) row.getItem();
             distritoSeleccionado = pais.getRegiones().get(rowItem.getColumn3());
-            Map<String, Seccion> secciones = distritoSeleccionado.getChilds();
+            Map<String, Seccion> secciones = distritoSeleccionado.getSecciones();
             tbSecciones.setDisable(false);
 
             Utils.initTableViewSeccion("Seccion", listSecciones, tableVotosSeccion);
             popularSecciones(secciones.entrySet().iterator());
             SingleSelectionModel<Tab> selectionModel = tabResultados.getSelectionModel();
             selectionModel.select(2);
-        }
+        }*/
     }
 
     private void popularSecciones(Iterator<Map.Entry<String, Seccion>> iterator) {
-        listSecciones.clear();
+/*        listSecciones.clear();
         while (iterator.hasNext()) {
             Map.Entry<String, Seccion> entry = iterator.next();
             Seccion current = entry.getValue();
@@ -173,11 +190,11 @@ public class ControllerPantalla {
             Integer first = Integer.parseInt(o1.getColumn2());
             Integer second = Integer.parseInt(o2.getColumn2());
             return second.compareTo(first);
-        });
+        });*/
     }
 
     public void rowSeccionSelected(MouseEvent mouseEvent) {
-        Node node = ((Node) mouseEvent.getTarget()).getParent();
+/*        Node node = ((Node) mouseEvent.getTarget()).getParent();
         TableRow row;
         if (mouseEvent.getClickCount() == 2) {
             if (node instanceof TableRow) {
@@ -186,19 +203,19 @@ public class ControllerPantalla {
                 row = (TableRow) node.getParent();
             }
             Row rowItem = (Row) row.getItem();
-            Seccion seccionSeleccionada = distritoSeleccionado.getChilds().get(rowItem.getColumn3());
-            Map<String, Circuito> secciones = seccionSeleccionada.getChilds();
+            Seccion seccionSeleccionada = distritoSeleccionado.getSecciones().get(rowItem.getColumn3());
+            Map<String, Circuito> secciones = seccionSeleccionada.getCircuitos();
             tbCircuitos.setDisable(false);
 
             Utils.initTableViewSeccion("Circuitos", listCircuitos, tableVotosCircuito);
             popularCircuitos(secciones.entrySet().iterator());
             SingleSelectionModel<Tab> selectionModel = tabResultados.getSelectionModel();
             selectionModel.select(3);
-        }
+        }*/
     }
 
     private void popularCircuitos(Iterator<Map.Entry<String, Circuito>> iterator) {
-        listCircuitos.clear();
+/*        listCircuitos.clear();
         while (iterator.hasNext()) {
             Map.Entry<String, Circuito> entry = iterator.next();
             Circuito current = entry.getValue();
@@ -209,7 +226,7 @@ public class ControllerPantalla {
             Integer first = Integer.parseInt(o1.getColumn2());
             Integer second = Integer.parseInt(o2.getColumn2());
             return second.compareTo(first);
-        });
+        });*/
     }
 
     public void tabAgrupacionSelected() {

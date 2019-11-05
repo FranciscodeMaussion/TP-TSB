@@ -2,7 +2,7 @@ package com.tsb.negocio;
 
 import com.tsb.soporte.Acumulador;
 
-public class Agrupacion implements Votable {
+public class Agrupacion{
     private String codigoCategoria;
     private int codigoAgrupacion;
     private String nombreAgrupacion;
@@ -28,12 +28,10 @@ public class Agrupacion implements Votable {
                 '}';
     }
 
-    @Override
     public int getVotos() {
         return cantidadVotos.getCantidad();
     }
 
-    @Override
     public void sumarVotos(int votos) {
         cantidadVotos.sumar(votos);
     }

@@ -1,14 +1,11 @@
 package com.tsb.negocio;
 
-import com.tsb.soporte.Acumulador;
-
 import java.util.Iterator;
 import java.util.Map;
 
 
 public class Pais {
 
-    private Map<String, Acumulador> resultados;
     private Map<String, Agrupacion> postulaciones;
     private Map<String, Distrito> regiones;
     private int[] regionesCount;
@@ -24,14 +21,6 @@ public class Pais {
 
     public Iterator<Map.Entry<String, Distrito>> mostrarResultadosXDistrito() {
         return regiones.entrySet().iterator();
-    }
-
-    public Map<String, Acumulador> getResultados() {
-        return resultados;
-    }
-
-    public void setResultados(Map<String, Acumulador> resultados) {
-        this.resultados = resultados;
     }
 
     public Map<String, Agrupacion> getPostulaciones() {
@@ -63,7 +52,11 @@ public class Pais {
     }
 
     public int getMesasSize() {
-        return resultados.size();
+        return regionesCount[3];
+    }
+
+    public void setMesasSize(int count) {
+        regionesCount[3] = count;
     }
 
     public void setRegionesCount(int[] regionesCount) {

@@ -67,16 +67,16 @@ public class RegionesTextFileServiceImpl implements RegionesTextFileService {
 
     @Override
     public int[] countRegiones(Map<String, Distrito> table) {
-        int[] indexCounts = new int[3];
+        int[] indexCounts = new int[4];
 
         Collection<Distrito> distritos = table.values();
         int index = 0;
         int seccionesIndex = 0;
         int circuitosIndex = 0;
         for (Distrito distrito : distritos) {
-            Collection<Seccion> secciones = distrito.getChilds().values();
+            Collection<Seccion> secciones = distrito.getSecciones().values();
             for (Seccion seccion : secciones) {
-                circuitosIndex += seccion.getChilds().size();
+                circuitosIndex += seccion.getCircuitos().size();
                 seccionesIndex++;
             }
             index++;
@@ -84,10 +84,10 @@ public class RegionesTextFileServiceImpl implements RegionesTextFileService {
         indexCounts[0] = index;
         indexCounts[1] = seccionesIndex;
         indexCounts[2] = circuitosIndex;
+        indexCounts[3] = 0;
         return indexCounts;
     }
 
-    //TODO necesitamos esto?
     private void validate(int count, Map<String, Distrito> table) {
         LOG.info("Lineas: {}", count);
         int[] indexCounts = countRegiones(table);

@@ -2,8 +2,8 @@ package com.tsb.negocio;
 
 public interface Votable {
 
-    int getVotos();
+    int getVotosAgrupacion(String codigoAgrupacion);
 
-    void sumarVotos(int votos);
+    void sumarVotosAgrupacion(int votos, String codigoAgrupacion);
 
 }

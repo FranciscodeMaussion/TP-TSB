@@ -7,7 +7,6 @@ import com.tsb.negocio.Pais;
 import com.tsb.services.MesasTextFileService;
 import com.tsb.services.PostulacionesTextFileService;
 import com.tsb.services.RegionesTextFileService;
-import com.tsb.soporte.Acumulador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +41,7 @@ public class Gestor {
     }
 
     public void cargarResultados(Pais pais, String path) {
-        Map<String, Acumulador> resultados = mesasTextFileService.sumarVotos(path + Constants.FILE_MESAS, regiones, postulaciones);
-        pais.setResultados(resultados);
+        int mesasCount = mesasTextFileService.sumarVotos(path + Constants.FILE_MESAS, regiones, postulaciones);
+        pais.setMesasSize(mesasCount);
     }
 }
