@@ -56,7 +56,7 @@ public class MesasTextFileServiceImpl implements MesasTextFileService {
                 if (agrupacion == null) {
                     agrupacion = new Agrupacion(campos[CATEGORIA_MESA], Integer.parseInt(campos[AGRUPACION_MESA]), DEFAULT_NAME);
                 }
-                agrupacion.getAcumulador().sumar(votos);
+                agrupacion.sumarVotos(votos);
                 postulaciones.put(campos[AGRUPACION_MESA], agrupacion);
 
                 // Suma por Distrito, Seccion, Circuito
@@ -65,7 +65,7 @@ public class MesasTextFileServiceImpl implements MesasTextFileService {
                 if (distrito == null) {
                     distrito = new Distrito(distritoCode, DEFAULT_NAME);
                 }
-                distrito.getAcumulador().sumar(votos);
+                distrito.sumarVotos(votos);
 
                 String seccionCode = campos[CIRCUITO_MESA].substring(LENGTH_DISTRITO, LENGTH_SECCION);
                 Map<String, Seccion> secciones = distrito.getChilds();
@@ -73,7 +73,7 @@ public class MesasTextFileServiceImpl implements MesasTextFileService {
                 if (seccion == null) {
                     seccion = new Seccion(seccionCode, DEFAULT_NAME);
                 }
-                seccion.getAcumulador().sumar(votos);
+                seccion.sumarVotos(votos);
 
                 String circuitoCode = campos[CIRCUITO_MESA].substring(LENGTH_SECCION);
                 Map<String, Circuito> circuitos = seccion.getChilds();
@@ -81,7 +81,7 @@ public class MesasTextFileServiceImpl implements MesasTextFileService {
                 if (circuito == null) {
                     circuito = new Circuito(circuitoCode, DEFAULT_NAME);
                 }
-                circuito.getAcumulador().sumar(votos);
+                circuito.sumarVotos(votos);
 
                 circuitos.put(circuitoCode, circuito);
                 secciones.put(seccionCode, seccion);

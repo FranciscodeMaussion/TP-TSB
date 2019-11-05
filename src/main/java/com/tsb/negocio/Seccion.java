@@ -53,8 +53,13 @@ public class Seccion implements Votable {
     }
 
     @Override
-    public Acumulador getAcumulador() {
-        return cantidadVotos;
+    public int getVotos() {
+        return cantidadVotos.getCantidad();
+    }
+
+    @Override
+    public void sumarVotos(int votos) {
+        cantidadVotos.sumar(votos);
     }
 
 }

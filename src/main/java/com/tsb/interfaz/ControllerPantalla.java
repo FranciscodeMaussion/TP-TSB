@@ -27,6 +27,7 @@ public class ControllerPantalla {
     public Button btnCargarAgrupaciones;
     public Button btnCargarRegiones;
     public Button btnCargarVotos;
+    public Button btnCargarArchivos;
     public Label lblPath;
     public Label lblAgrupaciones;
     public TabPane tabResultados;
@@ -54,14 +55,18 @@ public class ControllerPantalla {
     private Distrito distritoSeleccionado;
     private Seccion seccionSeleccionada;
 
-    public void cargarAgrupaciones(ActionEvent actionEvent) {
+    public void cargarArchivos(ActionEvent actionEvent) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File file = directoryChooser.showDialog(null);
         if (file != null) {
             path = file.getPath();
             lblPath.setText(path);
         }
+        btnCargarArchivos.setDisable(true);
+        btnCargarAgrupaciones.setDisable(false);
+    }
 
+    public void cargarAgrupaciones(ActionEvent actionEvent) {
         gestor.cargarDescripcionPostulaciones(pais, path);
         lblTextHint.setVisible(false);
 
@@ -79,8 +84,8 @@ public class ControllerPantalla {
         while (iterator.hasNext()) {
             Map.Entry<String, Agrupacion> entry = iterator.next();
             Agrupacion current = entry.getValue();
-            listAgrupacion.add(new Row(current.getNombreAgrupacion(), "" + current.getAcumulador().getCantidad(), entry.getKey()));
-            LOG.info("Agrupacion: {}, recibio: {}", current.getNombreAgrupacion(), current.getAcumulador().getCantidad());
+            listAgrupacion.add(new Row(current.getNombreAgrupacion(), "" + current.getVotos(), entry.getKey()));
+            LOG.info("Agrupacion: {}, recibio: {}", current.getNombreAgrupacion(), current.getVotos());
         }
         listAgrupacion.sort((o1, o2) -> {
             // TODO Consider to ask for order row
@@ -111,8 +116,8 @@ public class ControllerPantalla {
         while (iterator.hasNext()) {
             Map.Entry<String, Distrito> entry = iterator.next();
             Distrito current = entry.getValue();
-            listDistritos.add(new Row(current.getDescripcion(), "" + current.getAcumulador().getCantidad(), entry.getKey()));
-            LOG.info("Distrito: {}, recibio: {}", current.getDescripcion(), current.getAcumulador().getCantidad());
+            listDistritos.add(new Row(current.getDescripcion(), "" + current.getVotos(), entry.getKey()));
+            LOG.info("Distrito: {}, recibio: {}", current.getDescripcion(), current.getVotos());
         }
         listDistritos.sort((o1, o2) -> {
             Integer first = Integer.parseInt(o1.getColumn2());
@@ -161,8 +166,8 @@ public class ControllerPantalla {
         while (iterator.hasNext()) {
             Map.Entry<String, Seccion> entry = iterator.next();
             Seccion current = entry.getValue();
-            listSecciones.add(new Row(current.getDescripcion(), "" + current.getAcumulador().getCantidad(), entry.getKey()));
-            LOG.info("Seccion: {}, recibio: {}", current.getDescripcion(), current.getAcumulador().getCantidad());
+            listSecciones.add(new Row(current.getDescripcion(), "" + current.getVotos(), entry.getKey()));
+            LOG.info("Seccion: {}, recibio: {}", current.getDescripcion(), current.getVotos());
         }
         listSecciones.sort((o1, o2) -> {
             Integer first = Integer.parseInt(o1.getColumn2());
@@ -197,8 +202,8 @@ public class ControllerPantalla {
         while (iterator.hasNext()) {
             Map.Entry<String, Circuito> entry = iterator.next();
             Circuito current = entry.getValue();
-            listCircuitos.add(new Row(current.getDescripcion(), "" + current.getAcumulador().getCantidad(), entry.getKey()));
-            LOG.info("Seccion: {}, recibio: {}", current.getDescripcion(), current.getAcumulador().getCantidad());
+            listCircuitos.add(new Row(current.getDescripcion(), "" + current.getVotos(), entry.getKey()));
+            LOG.info("Seccion: {}, recibio: {}", current.getDescripcion(), current.getVotos());
         }
         listCircuitos.sort((o1, o2) -> {
             Integer first = Integer.parseInt(o1.getColumn2());
@@ -220,4 +225,6 @@ public class ControllerPantalla {
         } catch (Exception ignored) {
         }
     }
+
+
 }

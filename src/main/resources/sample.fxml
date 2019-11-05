@@ -2,62 +2,78 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tsb.interfaz.ControllerPantalla">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
+            prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.tsb.interfaz.ControllerPantalla">
     <children>
-    <Button fx:id="btnCargarAgrupaciones" layoutX="14.0" layoutY="59.0" mnemonicParsing="false" onAction="#cargarAgrupaciones" text="Cargar Agrupaciones" />
-      <Button fx:id="btnCargarRegiones" disable="true" layoutX="14.0" layoutY="97.0" mnemonicParsing="false" onAction="#cargarRegiones" prefHeight="26.0" prefWidth="155.0" text="Cargar Regiones" />
-      <Button fx:id="btnCargarVotos" disable="true" layoutX="14.0" layoutY="135.0" mnemonicParsing="false" onAction="#cargarVotos" prefHeight="26.0" prefWidth="155.0" text="Cargar Votos" />
-      <Label fx:id="lblPath" layoutX="187.0" layoutY="14.0" prefHeight="16.0" prefWidth="561.0" text="Path: " />
-      <Label fx:id="lblMesas" layoutX="187.0" layoutY="140.0" prefHeight="16.0" prefWidth="219.0" text="Mesas Escrutadas: " />
-      <Label fx:id="lblAgrupaciones" layoutX="187.0" layoutY="67.0" text="Agrupaciones Cargadas: " />
-      <Label fx:id="lblDistritos" layoutX="187.0" layoutY="102.0" text="Distritos Cargados: " />
-      <Label fx:id="lblSecciones" layoutX="347.0" layoutY="102.0" text="Secciones Cargadas: " />
-      <Label fx:id="lblCircuitos" layoutX="528.0" layoutY="97.0" prefHeight="26.0" prefWidth="258.0" text="Circuitos Cargados: " />
-      <TabPane fx:id="tabResultados" layoutX="8.0" layoutY="204.0" prefHeight="371.0" prefWidth="785.0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-          <Tab fx:id="tbAgrupaciones" disable="true" onSelectionChanged="#tabAgrupacionSelected" text="Agrupaciones">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView fx:id="tableVotosAgrupacion" layoutX="7.0" layoutY="7.0" prefHeight="331.0" prefWidth="778.0">
-                        </TableView>
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-          <Tab fx:id="tbDistritos" disable="true" onSelectionChanged="#tabRegionSelected" text="Distritos">
-              <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                      <children>
-                          <TableView fx:id="tableVotosDistrito" layoutX="7.0" layoutY="7.0" onMouseClicked="#rowDistritoSelected" prefHeight="331.0" prefWidth="778.0">
-                          </TableView>
-                      </children>
-                  </AnchorPane>
-              </content>
-          </Tab>
-            <Tab fx:id="tbSecciones" disable="true" onSelectionChanged="#tabRegionSelected" text="Secciones">
-                <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <children>
-                            <TableView fx:id="tableVotosSeccion" layoutX="7.0" layoutY="7.0" onMouseClicked="#rowSeccionSelected" prefHeight="331.0" prefWidth="778.0">
-                            </TableView>
-                        </children>
-                    </AnchorPane>
-                </content>
-            </Tab>
-            <Tab fx:id="tbCircuitos" disable="true" onSelectionChanged="#tabRegionSelected" text="Circuitos">
-                <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <children>
-                            <TableView fx:id="tableVotosCircuito" layoutX="7.0" layoutY="7.0" prefHeight="331.0" prefWidth="778.0">
-                            </TableView>
-                        </children>
-                    </AnchorPane>
-                </content>
-            </Tab>
-        </tabs>
-      </TabPane>
-      <Label fx:id="lblTextHint" layoutX="187.0" layoutY="172.0" prefHeight="26.0" prefWidth="457.0" text="Doble click en una region para ver el detalle de sus sub-regiones" visible="false" />
+        <Button fx:id="btnCargarArchivos" layoutX="14.0" layoutY="10.0" mnemonicParsing="false"
+                onAction="#cargarArchivos" prefHeight="26.0" prefWidth="155.0" text="Cargar Archivos"/>
+        <Button fx:id="btnCargarAgrupaciones" disable="true" layoutX="14.0" layoutY="59.0" mnemonicParsing="false"
+                onAction="#cargarAgrupaciones" prefHeight="26.0" prefWidth="155.0" text="Cargar Agrupaciones"/>
+        <Button fx:id="btnCargarRegiones" disable="true" layoutX="14.0" layoutY="97.0" mnemonicParsing="false"
+                onAction="#cargarRegiones" prefHeight="26.0" prefWidth="155.0" text="Cargar Regiones"/>
+        <Button fx:id="btnCargarVotos" disable="true" layoutX="14.0" layoutY="135.0" mnemonicParsing="false"
+                onAction="#cargarVotos" prefHeight="26.0" prefWidth="155.0" text="Cargar Votos"/>
+        <Label fx:id="lblPath" layoutX="187.0" layoutY="14.0" prefHeight="16.0" prefWidth="561.0" text="Path: "/>
+        <Label fx:id="lblMesas" layoutX="187.0" layoutY="140.0" prefHeight="16.0" prefWidth="219.0"
+               text="Mesas Escrutadas: "/>
+        <Label fx:id="lblAgrupaciones" layoutX="187.0" layoutY="63.0" text="Agrupaciones Cargadas: "/>
+        <Label fx:id="lblDistritos" layoutX="187.0" layoutY="102.0" text="Distritos Cargados: "/>
+        <Label fx:id="lblSecciones" layoutX="347.0" layoutY="102.0" text="Secciones Cargadas: "/>
+        <Label fx:id="lblCircuitos" layoutX="528.0" layoutY="97.0" prefHeight="26.0" prefWidth="258.0"
+               text="Circuitos Cargados: "/>
+        <TabPane fx:id="tabResultados" layoutX="8.0" layoutY="204.0" prefHeight="371.0" prefWidth="785.0"
+                 tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab fx:id="tbAgrupaciones" disable="true" onSelectionChanged="#tabAgrupacionSelected"
+                     text="Agrupaciones">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <TableView fx:id="tableVotosAgrupacion" layoutX="7.0" layoutY="7.0" prefHeight="331.0"
+                                           prefWidth="778.0">
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="tbDistritos" disable="true" onSelectionChanged="#tabRegionSelected" text="Distritos">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <TableView fx:id="tableVotosDistrito" layoutX="7.0" layoutY="7.0"
+                                           onMouseClicked="#rowDistritoSelected" prefHeight="331.0" prefWidth="778.0">
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="tbSecciones" disable="true" onSelectionChanged="#tabRegionSelected" text="Secciones">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <TableView fx:id="tableVotosSeccion" layoutX="7.0" layoutY="7.0"
+                                           onMouseClicked="#rowSeccionSelected" prefHeight="331.0" prefWidth="778.0">
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="tbCircuitos" disable="true" onSelectionChanged="#tabRegionSelected" text="Circuitos">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <TableView fx:id="tableVotosCircuito" layoutX="7.0" layoutY="7.0" prefHeight="331.0"
+                                           prefWidth="778.0">
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+        <Label fx:id="lblTextHint" layoutX="187.0" layoutY="172.0" prefHeight="26.0" prefWidth="457.0"
+               text="Doble click en una region para ver el detalle de sus sub-regiones" visible="false"/>
+
     </children>
 </AnchorPane>

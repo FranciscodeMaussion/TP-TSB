@@ -7,6 +7,7 @@ public class Agrupacion implements Votable {
     private int codigoAgrupacion;
     private String nombreAgrupacion;
     private Acumulador cantidadVotos;
+
     public Agrupacion(String codigoCategoria, int codigoAgrupacion, String nombreAgrupacion) {
         this.codigoCategoria = codigoCategoria;
         this.codigoAgrupacion = codigoAgrupacion;
@@ -28,7 +29,12 @@ public class Agrupacion implements Votable {
     }
 
     @Override
-    public Acumulador getAcumulador() {
-        return cantidadVotos;
+    public int getVotos() {
+        return cantidadVotos.getCantidad();
+    }
+
+    @Override
+    public void sumarVotos(int votos) {
+        cantidadVotos.sumar(votos);
     }
 }
