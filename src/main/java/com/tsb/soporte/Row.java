@@ -3,48 +3,45 @@ package com.tsb.soporte;
 import org.springframework.util.StringUtils;
 
 public class Row {
-    private String column1;
-    private String column2;
-    private String column3;
+    private String id;
+    private String descripcion;
+    private String votos;
 
-    public Row(String column1, String column2, String column3) {
-        this.column1 = column1;
-        this.column2 = column2;
-        this.column3 = column3;
+    public Row(String descripcion, String votos, String id) {
+        this.descripcion = descripcion;
+        this.votos = votos;
+        this.id = id;
     }
 
-    public String getColumn1() {
-        return column1;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setColumn1(String column1) {
-        this.column1 = column1;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
-    public String getColumn2() {
-        return column2;
+    public String getVotos() {
+        return votos;
     }
 
-    public void setColumn2(String column2) {
-        this.column2 = column2;
+    public void setVotos(String votos) {
+        this.votos = votos;
     }
 
-    public String getColumn3() {
-        return column3;
+    public String getId() {
+        return id;
     }
 
-    public void setColumn3(String column3) {
-        this.column3 = column3;
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
     public String toString() {
-        String result = column1;
-        if(StringUtils.hasText(column2)){
-            result += ", " + column2;
-        }
-        if(StringUtils.hasText(column3)){
-            result += ", " + column3;
+        String result = descripcion;
+        if (StringUtils.hasText(votos)) {
+            result += ", " + votos;
         }
         return result;
     }

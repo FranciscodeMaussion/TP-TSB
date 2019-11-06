@@ -21,8 +21,8 @@
             <ChoiceBox fx:id="selSeccion" disable="true" layoutX="263.0" layoutY="33.0" onAction="#seccionSelected" prefWidth="150.0" />
             <Label layoutX="16.0" layoutY="89.0" text="Circuito" />
             <ChoiceBox fx:id="selCircuito" disable="true" layoutX="15.0" layoutY="109.0" onAction="#circuitoSelected" prefWidth="150.0" />
-            <Label fx:id="lblMesa" layoutX="263.0" layoutY="89.0" text="Mesa" />
-            <TextField fx:id="txtMesas" disable="true" layoutX="263.0" layoutY="109.0" prefHeight="26.0" prefWidth="150.0" />
+            <Label layoutX="263.0" layoutY="89.0" text="Mesa" />
+            <ChoiceBox fx:id="selMesas" disable="true" layoutX="263.0" layoutY="109.0" prefHeight="26.0" prefWidth="150.0" />
             <Button fx:id="btnFiltrar" disable="true" layoutX="244.0" layoutY="154.0" mnemonicParsing="false" onAction="#filtrar" text="Aplicar Filtros" />
             <Button fx:id="btnLimpiar" disable="true" layoutX="110.0" layoutY="154.0" mnemonicParsing="false" onAction="#limpiar" text="Limpiar Filtros" />
          </children>

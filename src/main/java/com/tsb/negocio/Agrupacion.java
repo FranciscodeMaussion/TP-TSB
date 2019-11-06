@@ -2,7 +2,7 @@ package com.tsb.negocio;
 
 import com.tsb.soporte.Acumulador;
 
-public class Agrupacion{
+public class Agrupacion {
     private String codigoCategoria;
     private int codigoAgrupacion;
     private String nombreAgrupacion;
