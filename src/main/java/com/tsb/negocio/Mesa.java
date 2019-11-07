@@ -23,7 +23,7 @@ public class Mesa implements Votable {
     @Override
     public void sumarVotosAgrupacion(int votos, String codigoAgrupacion) {
         Acumulador votosAgrupacion = cantidadVotos.get(codigoAgrupacion);
-        if (votosAgrupacion == null){
+        if (votosAgrupacion == null) {
             votosAgrupacion = new Acumulador(0);
         }
         votosAgrupacion.sumar(votos);
