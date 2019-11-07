@@ -47,7 +47,7 @@ public class ControllerPantalla implements Initializable {
     private Gestor gestor;
     private AyudantePantalla ayudantePantalla;
     private Pais pais;
-    private String path;
+
 
     private ObservableList<Row> listaAgrupaciones = FXCollections.observableArrayList();
     private ObservableList<Row> listaDistrito = FXCollections.observableArrayList();
@@ -83,6 +83,7 @@ public class ControllerPantalla implements Initializable {
 
     //Cuando se selecciona Cargar Archivos y se elije la carpeta con los archivos
     public void cargarArchivos(ActionEvent actionEvent) {
+        String path = null;
         DirectoryChooser directoryChooser = new DirectoryChooser();
         btnCargarArchivos.setText(MESSAGE_CARGANDO);
         File file = directoryChooser.showDialog(null);
