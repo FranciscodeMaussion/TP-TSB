@@ -27,13 +27,13 @@ public class RegionesTextFileServiceImpl implements RegionesTextFileService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RegionesTextFileServiceImpl.class);
 
-    private HashMap<Integer, RegionStrategy> strategies;
+    private HashMap<Integer, RegionStrategy> estrategias;
 
     public RegionesTextFileServiceImpl() {
-        strategies = new HashMap<>();
-        strategies.put(LENGTH_DISTRITO, RegionDistritoStrategy.getInstance());
-        strategies.put(LENGTH_SECCION, RegionSeccionStrategy.getInstance());
-        strategies.put(LENGTH_CIRCUITO, RegionCircuitoStrategy.getInstance());
+        estrategias = new HashMap<>();
+        estrategias.put(LENGTH_DISTRITO, RegionDistritoStrategy.getInstance());
+        estrategias.put(LENGTH_SECCION, RegionSeccionStrategy.getInstance());
+        estrategias.put(LENGTH_CIRCUITO, RegionCircuitoStrategy.getInstance());
     }
 
 
@@ -51,7 +51,7 @@ public class RegionesTextFileServiceImpl implements RegionesTextFileService {
             LOG.debug(line);
             String[] campos = line.split(SEPARATOR);
 
-            RegionStrategy estrategia = Utils.obtenerEstrategia(campos[CODIGO_REGION], strategies);
+            RegionStrategy estrategia = Utils.obtenerEstrategia(campos[CODIGO_REGION], estrategias);
 
             if (estrategia != null) {
                 estrategia.process(campos, table);

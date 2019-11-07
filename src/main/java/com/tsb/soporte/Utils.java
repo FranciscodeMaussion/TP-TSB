@@ -24,18 +24,5 @@ public class Utils {
         return strategies.get(estrategiaElegida);
     }
 
-    public static void initTableViewSeccion(String nombre, ObservableList<Row> list, TableView<Row> table) {
-        table.setItems(list);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        TableColumn<Row, String> nameColumn = new TableColumn<>(nombre);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 
-        TableColumn<Row, String> idColumn = new TableColumn<>("Id");
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-
-        TableColumn<Row, String> votosColumn = new TableColumn<>("Votos");
-        votosColumn.setCellValueFactory(new PropertyValueFactory<>("votos"));
-        table.getColumns().clear();
-        table.getColumns().addAll(idColumn, nameColumn, votosColumn);
-    }
 }
