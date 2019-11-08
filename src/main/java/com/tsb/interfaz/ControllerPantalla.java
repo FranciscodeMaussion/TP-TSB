@@ -110,13 +110,11 @@ public class ControllerPantalla implements Initializable {
         Row row = (Row) selDistrito.getSelectionModel().getSelectedItem();
         if (row == null || row.getId() == null) {
             clearSeccion();
-            clearCircuito();
             return;
         }
         distritoSeleccionado = pais.getRegiones().get(row.getId());
         LOG.info("Distrito {} selected", distritoSeleccionado);
         clearSeccion();
-        clearCircuito();
         ayudantePantalla.popularSelectorSecciones(listaSeccion, distritoSeleccionado);
     }
 
@@ -130,7 +128,6 @@ public class ControllerPantalla implements Initializable {
         seccionSeleccionada = distritoSeleccionado.getSecciones().get(row.getId());
         LOG.info("Seccion {} selected", seccionSeleccionada);
         clearCircuito();
-
         ayudantePantalla.popularSelectorCircuitos(listaCircuito, seccionSeleccionada);
     }
 
